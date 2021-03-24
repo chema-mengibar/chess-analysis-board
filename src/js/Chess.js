@@ -41,6 +41,7 @@ export default class Chess {
         // this.drawMarkerInSquare('a1', 'ro');
 
         // this.addMarkerToSquare('e4', 'marker-circle-white');
+        // this.actionsBridge.onDomainB()
 
     }
 
@@ -299,7 +300,7 @@ export default class Chess {
         const domainClassName = this.getDomainClassNameByColor(color);
         const squaresInDomain = []
         this.squaresMap.forEach((squareEntry, squareName) => {
-            if (squareEntry && squareEntry.color === white) {
+            if (squareEntry && squareEntry.color === color) {
                 const squaresFromFigure = this.getSquarePieceAllowedSquares(squareName);
                 squaresInDomain.push(...squaresFromFigure);
             }
