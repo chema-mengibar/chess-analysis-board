@@ -1,0 +1,25 @@
+:root {
+    /* Default cells bg */
+    --color-default-cell-white: #fff;
+    --color-default-cell-black: #ccc;
+    --color-default-cell-line: grey;
+    --color-square-selection: rgba(168, 198, 0, 0.795);
+    /* Anotation cell */
+    --color-anotation-color: black;
+    /* Last move bg */
+    --color-move-last: #000;
+    /* Right move bg */
+    --color-move-ok: #00C627;
+    /* Wrong move bg */
+    --color-move-error: #FA2A3F;
+    /* Figures black*/
+    --color-figure-black-color: #e37038;
+    --color-figure-black-bg: #f79b6463;
+    /* Figures white*/
+    --color-figure-white-color: #057993;
+    --color-figure-white-bg: #6499ff6b;
+    /*
+Usage:
+background-color: rgba(var(--color), 0.8); 
+*/
+}

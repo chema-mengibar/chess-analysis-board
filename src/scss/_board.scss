@@ -1,0 +1,89 @@
+.board {
+    max-width: 300px;
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid rgba(180, 181, 185, .5);
+}
+
+.square {
+    cursor: pointer;
+    .base {
+        fill: rgba(39, 42, 49, .5);
+        stroke: rgb(180, 181, 185);
+        stroke-opacity: 0.34;
+        stroke-width: 0.27px;
+    }
+    &:hover {
+        .base:not(.with-selection) {
+            fill: #02010166;
+        }
+    }
+}
+
+.board-coordinate-col,
+.board-coordinate-row {
+    font-size: 3px;
+    fill: #999;
+}
+
+.base {
+    &.with-domain-black:not(.with-domain-white):not(.with-selection) {
+        fill: #570a15;
+    }
+    &.with-domain-white:not(.with-domain-black):not(.with-selection) {
+        fill: #666;
+    }
+    &.with-domain-white.with-domain-black:not(.with-selection) {
+        fill: #e7442b91;
+    }
+    &.with-selection {
+        fill: #020101;
+    }
+}
+
+.marker-square-notation {
+    fill: white;
+    font-size: 3px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.marker-circle-neutral {
+    stroke: rgb(0, 154, 255);
+}
+
+.marker-circle-white {
+    stroke: rgb(255, 255, 255);
+}
+
+.marker-circle-black {
+    stroke: rgb(231, 68, 43);
+}
+
+.marker-rect-ok {
+    stroke: rgb(0, 255, 95);
+    stroke-width: .5;
+}
+
+.marker-rect-error {
+    stroke: rgb(255, 0, 4);
+    stroke-width: .5;
+}
+
+.piece {
+    &.white {
+        fill: white;
+    }
+    &.black {
+        fill: rgb(231, 68, 43);
+    }
+    &.asIcon {
+        font-size: 8px;
+        font-family: 'SegoeUISymbol', 'Segoe UI Symbol', sans-serif;
+    }
+    ;
+    &:not(.asIcon) {
+        font-size: 6px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    ;
+}

@@ -1,0 +1,55 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: rgb(50, 54, 60);
+}
+
+.layout-centered {
+    width: 100%;
+    // max-width: 420px; // mobile
+}
+
+.blocks {
+    display: flex;
+    flex-direction: row; // column
+    height: 100%;
+    overflow: hidden;
+}
+
+.block-board,
+.block-panel {
+    padding: 20px;
+}
+
+.block-board {
+    height: 320px;
+}
+
+.block-panel {
+    flex-grow: 1;
+    overflow-y: scroll;
+}
+
+.copy-headline {
+    display: flex;
+    align-items: first baseline;
+    h1 {
+        margin: 0 10px 0 0;
+    }
+}
+
+section {
+    padding: 10px;
+    border-top: 1px solid #666;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    font-size: 16px;
+}
+
+.figures-palette {
+    padding: 10px;
+}

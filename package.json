@@ -1,0 +1,29 @@
+{
+    "name": "board-in-vanilla",
+    "version": "1.0.0",
+    "description": "A simple chess board and functionalities in vanilla",
+    "main": "server.js",
+    "scripts": {
+        "simple-server": "node server.js",
+        "test": "jest --config jest.config.js",
+        "start": "cross-env NODE_PATH=. NODE_ENV=development webpack serve --open --config webpack.dev.js",
+        "build": "cross-env NODE_PATH=. NODE_ENV=production webpack --config webpack.prod.js"
+    },
+    "author": "chema-mengibar",
+    "license": "MIT",
+    "devDependencies": {
+        "cross-env": "^7.0.3",
+        "css-loader": "^5.1.3",
+        "html-webpack-plugin": "^5.3.1",
+        "jest": "^26.6.3",
+        "jest-esm-transformer": "^1.0.0",
+        "mini-css-extract-plugin": "^1.3.9",
+        "node-sass": "^5.0.0",
+        "sass-loader": "^11.0.1",
+        "style-loader": "^2.0.0",
+        "webpack": "^5.27.1",
+        "webpack-cli": "^4.5.0",
+        "webpack-dev-server": "^3.11.2",
+        "webpack-merge": "^5.7.3"
+    }
+}

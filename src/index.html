@@ -1,0 +1,142 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <title>chess board vanilla</title>
+</head>
+
+<body class="board-body">
+
+    <div class="layout-centered blocks">
+        <div class="block-board">
+            <div class="board">
+                <svg id="chess-svg" width="100%" height="auto" viewBox=" 0 0 100 100" xmlns="http://www.w3.org/2000/svg ">
+                    <g id="svg-markers" visibility="hidden">
+                        <circle id="marker-circle-neutral" class="marker-circle-neutral" stroke-dasharray="1" cx="5.6" cy="5.6" r="5" stroke="black" stroke-width=".5" fill="transparent"/>
+                        <circle id="marker-circle-black" class="marker-circle-black" stroke-dasharray="1" cx="5.6" cy="5.6" r="5" stroke="black" stroke-width=".5" fill="transparent"/>
+                        <circle id="marker-circle-white" class="marker-circle-white" stroke-dasharray="1" cx="5.6" cy="5.6" r="5" stroke="black" stroke-width=".5" fill="transparent"/>
+                        <circle id="marker-move-last" class="marker-move-last"  cx="5.6" cy="5.6" r="3.5" fill="black"/>
+                        <rect  fill="transparent" x="0.75%" y="0.75%" width="10%"  height="10%" id="marker-rect-ok" class="marker-rect-ok" />
+                        <rect  fill="transparent" x="0.75%" y="0.75%" width="10%"  height="10%" id="marker-rect-error" class="marker-rect-error" />
+                    </g>
+                    <g id="svg-squares" transform="translate(6,6)"></g>
+                    <g id="svg-coordinates" transform="translate(6,4)"></g>
+      
+                </svg>
+            </div>
+        </div>
+        <div class="block-panel">
+            <section>
+                <div class="copy-headline">
+                    <h1> Pieces </h1>
+                    <small>(Select a cell ﬁrst to add)</small>
+                </div>
+                <div class="figures-palette">
+                    <button class="button button-add-fig white" data-letter="R" type="button"> ♖ </button>
+                    <button class="button button-add-fig white" data-letter="N" type="button"> ♘ </button>
+                    <button class="button button-add-fig white" data-letter="B" type="button"> ♗ </button>
+                    <button class="button button-add-fig white" data-letter="K" type="button"> ♔ </button>
+                    <button class="button button-add-fig white" data-letter="Q" type="button"> ♕ </button>
+                    <button class="button button-add-fig white" data-letter="P" type="button"> ♙ </button>
+                </div>
+                <div class="figures-palette">
+                    <button class="button button-add-fig black" data-letter="r" type="button"> ♜ </button>
+                    <button class="button button-add-fig black" data-letter="n" type="button"> ♞ </button>
+                    <button class="button button-add-fig black" data-letter="b" type="button"> ♝ </button>
+                    <button class="button button-add-fig black" data-letter="k" type="button"> ♚ </button>
+                    <button class="button button-add-fig black" data-letter="q" type="button"> ♛ </button>
+                    <button class="button button-add-fig black" data-letter="p" type="button"> ♟ </button>
+                </div>
+                <div class="figures-palette">
+                    <button id="button-clear-square" class="button " type="button "> x </button>
+                </div>
+                <div class="figures-palette">
+                    <button class="button " id="button-clear" type="button"> clear board </button>
+                    <button class="button " id="button-init" type="button"> init board </button>
+                </div>
+
+            </section>
+            <section>
+                <div class="copy-headline">
+                    <h1> Markers </h1>
+                    <small>(Select a cell ﬁrst to add)</small>
+                </div>
+                <div class="figures-palette">
+                    <button class="button button-marker" type="button" data-marker-id="marker-circle-white">
+                        <svg viewBox="0 0 12 12" height="30px" width="30px" >
+                            <use href="#marker-circle-white" />
+                        </svg>
+                    </button>
+                    <button class="button button-marker" type="button" data-marker-id="marker-circle-neutral">
+                        <svg viewBox="0 0 12 12" height="30px" width="30px" >
+                            <use href="#marker-circle-neutral" />
+                        </svg>
+                    </button>
+                    <button class="button button-marker" type="button" data-marker-id="marker-circle-black">
+                        <svg viewBox="0 0 12 12" height="30px" width="30px" >
+                            <use href="#marker-circle-black" />
+                        </svg>
+                    </button>
+                    <button class="button button-marker" type="button" data-marker-id="marker-move-last">
+                        <svg viewBox="0 0 12 12" height="30px" width="30px" >
+                            <use href="#marker-move-last" />
+                        </svg>
+                    </button>
+                    <button class="button button-marker" type="button" data-marker-id="marker-rect-ok">
+                        <svg viewBox="0 0 .3 .3" height="30px" width="30px" >
+                            <use href="#marker-rect-ok" />
+                        </svg>
+                    </button>
+                    <button class="button button-marker" type="button" data-marker-id="marker-rect-error">
+                        <svg viewBox="0 0 .3 .3" height="30px" width="30px" >
+                            <use href="#marker-rect-error" />
+                        </svg>
+                    </button>
+                </div>
+            </section>
+            <section>
+
+                <h1> Analyse </h1>
+                <h3> Domains </h3>
+                <div class="figures-palette">
+                    <button class="button " id="button-paint-domains-square" type="button "> square domain </button>
+                    <button class="button " id="button-paint-domain-attack-square" type="button "> square domain attacks </button>
+                    <button class="button " id="button-paint-attack-square" type="button "> square attacks </button>
+                </div>
+                <div class="figures-palette">
+                    <button class="button " id="button-paint-domains-w" type="button "> domains w </button>
+                    <button class="button " id="button-paint-domains-b" type="button "> domains b </button>
+                    <button class="button " id="button-paint-domains-wb" type="button "> domains wb </button>
+                </div>
+                <div class="figures-palette">
+                    <button class="button " id="button-paint-support-square" type="button "> square support </button>
+                    <button class="button " id="button-paint-support-square-domain" type="button "> square domain support </button>
+                </div>
+                <div class="figures-palette">
+                    <button class="button " id="button-hide-domains-wb" type="button "> hide domains wb </button>
+                </div>
+
+
+                <h2> Flanks </h2>
+                <small>@todo</small>
+
+            </section>
+            <section>
+                <div class="copy-headline">
+                    <h1> Fen </h1>
+                    <small>@todo</small>
+                </div>
+                <div class="figures-palette">
+                    <button class="button " id="button-board-flip" type="button "> Flip board </button>
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+
+
+
+</body>
+<html>
