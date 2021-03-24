@@ -1,14 +1,23 @@
 {
-    "name": "board-in-vanilla",
+    "name": "chess-analysis-board",
     "version": "1.0.0",
-    "description": "A simple chess board and functionalities in vanilla",
-    "main": "server.js",
+    "description": "A chessboard for the browser in vanilla",
+    "main": "index.js",
     "scripts": {
-        "simple-server": "node server.js",
-        "test": "jest --config jest.config.js",
         "start": "cross-env NODE_PATH=. NODE_ENV=development webpack serve --open --config webpack.dev.js",
-        "build": "cross-env NODE_PATH=. NODE_ENV=production webpack --config webpack.prod.js"
+        "build": "cross-env NODE_PATH=. NODE_ENV=production webpack --config webpack.prod.js",
+        "test": "jest --config jest.config.js",
+        "simple-server": "node server.js"
     },
+    "keywords": ["chess", "vanilla", "analysis", "chessboard"],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/chema-mengibar/chess-analysis-board"
+    },
+    "bugs": {
+        "url": "https://github.com/chema-mengibar/chess-analysis-board/issues"
+    },
+    "homepage": "http://motuo.info/",
     "author": "chema-mengibar",
     "license": "MIT",
     "devDependencies": {
