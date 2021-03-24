@@ -41,6 +41,12 @@
     }
 }
 
+.markers {
+    &.marker-invisible {
+        display: none;
+    }
+}
+
 .marker-square-notation {
     fill: white;
     font-size: 3px;
