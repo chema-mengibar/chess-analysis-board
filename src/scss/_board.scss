@@ -1,21 +1,20 @@
-.board {
+.chess-board {
     max-width: 300px;
     width: 100%;
     margin: 0 auto;
-    border: 1px solid rgba(180, 181, 185, .5);
+    border: 1px solid var(--color-board-border);
 }
 
 .square {
     cursor: pointer;
     .base {
-        fill: rgba(39, 42, 49, .5);
-        stroke: rgb(180, 181, 185);
-        stroke-opacity: 0.34;
+        fill: var(--color-board-base-fill);
+        stroke: var(--color-board-base-stroke);
         stroke-width: 0.27px;
     }
     &:hover {
         .base:not(.with-selection) {
-            fill: #02010166;
+            fill: var(--color-board-base-fill-hover);
         }
     }
 }
@@ -23,21 +22,21 @@
 .board-coordinate-col,
 .board-coordinate-row {
     font-size: 3px;
-    fill: #999;
+    fill: var(--color-board-coords-text);
 }
 
 .base {
     &.with-domain-black:not(.with-domain-white):not(.with-selection) {
-        fill: #570a15;
+        fill: var(--color-board-base-domain-black);
     }
     &.with-domain-white:not(.with-domain-black):not(.with-selection) {
-        fill: #666;
+        fill: var(--color-board-base-domain-white);
     }
     &.with-domain-white.with-domain-black:not(.with-selection) {
-        fill: #e7442b91;
+        fill: var(--color-board-base-domain-both);
     }
     &.with-selection {
-        fill: #020101;
+        fill: var(--color-board-base-selection);
     }
 }
 
@@ -48,39 +47,40 @@
 }
 
 .marker-square-notation {
-    fill: white;
+    fill: var(--color-marker-notation);
     font-size: 3px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .marker-circle-neutral {
-    stroke: rgb(0, 154, 255);
+    stroke: var(--color-marker-neutral);
 }
 
 .marker-circle-white {
-    stroke: rgb(255, 255, 255);
+    stroke: var(--color-marker-white);
 }
 
 .marker-circle-black {
-    stroke: rgb(231, 68, 43);
+    stroke: var(--color-marker-black);
 }
 
 .marker-rect-ok {
-    stroke: rgb(0, 255, 95);
+    stroke: var(--color-marker-ok);
     stroke-width: .5;
 }
 
 .marker-rect-error {
-    stroke: rgb(255, 0, 4);
+    stroke: var(--color-marker-error);
+    ;
     stroke-width: .5;
 }
 
 .piece {
     &.white {
-        fill: white;
+        fill: var(--color-board-piece-white);
     }
     &.black {
-        fill: rgb(231, 68, 43);
+        fill: var(--color-board-piece-black);
     }
     &.asIcon {
         font-size: 8px;

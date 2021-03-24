@@ -1,25 +1,25 @@
 :root {
-    /* Default cells bg */
-    --color-default-cell-white: #fff;
-    --color-default-cell-black: #ccc;
-    --color-default-cell-line: grey;
-    --color-square-selection: rgba(168, 198, 0, 0.795);
-    /* Anotation cell */
-    --color-anotation-color: black;
-    /* Last move bg */
-    --color-move-last: #000;
-    /* Right move bg */
-    --color-move-ok: #00C627;
-    /* Wrong move bg */
-    --color-move-error: #FA2A3F;
-    /* Figures black*/
-    --color-figure-black-color: #e37038;
-    --color-figure-black-bg: #f79b6463;
-    /* Figures white*/
-    --color-figure-white-color: #057993;
-    --color-figure-white-bg: #6499ff6b;
-    /*
-Usage:
-background-color: rgba(var(--color), 0.8); 
-*/
+    --color-marker-neutral: rgb(0, 154, 255);
+    --color-marker-white: rgb(255, 255, 255);
+    --color-marker-black: rgb(231, 68, 43);
+    --color-marker-ok: rgb(0, 255, 95);
+    --color-marker-error: rgb(255, 0, 4);
+    --color-marker-notation: white;
+    --color-board-base-fill: rgba(39, 42, 49, .5);
+    --color-board-base-stroke: rgba(180, 181, 185, 0.34);
+    --color-board-base-fill-hover: #02010166;
+    --color-board-base-domain-black: #570a15;
+    --color-board-base-domain-white: #666;
+    --color-board-base-domain-both: #e7442b91;
+    --color-board-base-selection: #020101;
+    --color-board-piece-white: white;
+    --color-board-piece-black: rgb(231, 68, 43);
+    --color-board-coords-text: #999;
+    --color-board-border: rgba(180, 181, 185, .5);
+    --color-ui-body: rgb(50, 54, 60);
+    --color-ui-section-sep: #666;
+    --color-ui-section-text: white;
+    --color-ui-button-bg: rgb(29, 32, 36);
+    --color-ui-button-focus-bg: rgb(231, 68, 43);
+    --color-ui-button-text: white;
 }

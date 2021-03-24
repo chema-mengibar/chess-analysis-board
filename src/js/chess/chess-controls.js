@@ -149,8 +149,6 @@ export default class ChessControl {
         buttonFenLoad.addEventListener('click', function() {
             self.callBacks.onLoadFenFromInput();
         }, false);
-
-
     }
 
     async setBufferSquareTarget(squareName) {
@@ -160,7 +158,6 @@ export default class ChessControl {
 
             if (item.classList.contains('with-selection')) {
                 item.classList.remove('with-selection');
-
             } else {
                 item.classList.add('with-selection')
             }

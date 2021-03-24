@@ -1,4 +1,4 @@
-import { rows, cols, fenBase, flankQ, flankK, white, black, figures } from './chess/chess-const.js';
+import { rows, cols, fenBase, white, black, figures } from './chess/chess-const.js';
 import MovesRegistry from './MovesRegistry.js';
 import Utils from './chess/chess-utils.js';
 import Squares from './chess/chess-squares.js';
