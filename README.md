@@ -27,6 +27,9 @@ Installation, Development, Test, Build
    3. supported pieces, to better plan an attack
    4. ...
 
+## LIVE DEMO
+
+[http://motuo.info/chess/](http://motuo.info/chess/)
 
 ## FEATURES
 
@@ -136,6 +139,10 @@ Oberwart Open (1991), Oberwart AUT, Jul-??
 **White Pieces - attacked**
 ![game-ex-02](./docs/readme-assets/features-gifs/72188865-7ad4-4106-9e49-e1a9e04f7a57.jpg)
 
+
+## NOTICE
+
+The project does not provide a game engine :)
 
 ## NEXT FEATURES
 
