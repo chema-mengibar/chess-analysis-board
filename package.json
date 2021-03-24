@@ -17,7 +17,7 @@
     "bugs": {
         "url": "https://github.com/chema-mengibar/chess-analysis-board/issues"
     },
-    "homepage": "http://motuo.info/",
+    "homepage": "http://motuo.info/blog/dist/#/project/chess-analysis-board",
     "author": "chema-mengibar",
     "license": "MIT",
     "devDependencies": {
