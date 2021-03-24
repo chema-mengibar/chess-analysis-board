@@ -1,4 +1,5 @@
 import { rows, cols, fenBase, flankQ, flankK, white, black, figures } from './chess/chess-const.js';
+import MovesRegistry from './MovesRegistry.js';
 import Utils from './chess/chess-utils.js';
 import Squares from './chess/chess-squares.js';
 import Svg from './chess/chess-svg.js';
@@ -21,6 +22,8 @@ export default class Chess {
             black: black,
         };
 
+        this.movesRegistry = new MovesRegistry();
+
         // Run
         this.squaresMap = Utils.createSquaresMap(rows, cols);
         this.markersMap = Utils.createMarkersMap(rows, cols);
@@ -33,7 +36,21 @@ export default class Chess {
     }
 
     lab() {
-        // this.drawSupportToSquareDomain('d4');
+
+    }
+
+    labMoves() {
+        // In progress
+        this.move('e2', 'e4');
+        this.move('d5', 'e4');
+        this.move('d2', 'e4');
+        this.move('f6', 'f5');
+        console.log(this.movesRegistry.moves);
+        console.log(this.movesRegistry.currentMoveIdx);
+
+        setTimeout(() => {
+            this.jumpToMove(1);
+        }, 1000)
     }
 
     // ----------------------------------------------- Pieces & Board
@@ -44,6 +61,7 @@ export default class Chess {
         const fenAsObj = Utils.parseFenStrToObject(fen);
         this.squaresMap = new Map(Object.entries(fenAsObj));
     }
+
 
     async render() {
         this.drawBoard().then(() => {
@@ -66,14 +84,26 @@ export default class Chess {
         this.render()
     }
 
-    move(originSquare, targetSquare) {
+    async move(originSquare, targetSquare) {
+        console.log('[CHESS] move');
         const originPiece = this.squaresMap.get(originSquare);
         if (originPiece) {
             this.setFigureInSquare(targetSquare, originPiece.letter, originPiece.color);
             this.setFigureInSquare(originSquare, null);
             this.drawPiecesFromMap();
+            this.movesRegistry.saveMove(originSquare, targetSquare, this.squaresMap);
             return true;
         }
+    }
+
+    // ----------------------------------------------- Moves control
+
+    jumpToMove(moveIdx) {
+        const move = this.movesRegistry.moves[moveIdx];
+        this.fenToMap(move.fen);
+        this.drawPiecesFromMap();
+        this.drawMarkerInSquare(move.from, 'marker-move-last');
+        this.drawMarkerInSquare(move.to, 'marker-move-last');
     }
 
     // ----------------------------------------------- Maps
@@ -82,15 +112,23 @@ export default class Chess {
         this.squaresMap.set(squareName, Utils.asSquare(letter, color));
     }
 
-    addMarkerToSquare(squareName, markerId) {
+    addMarkerToSquare(squareName, markerId, forceRemove = false) {
         if (!squareName) {
             return
         }
         const squareMarkers = this.markersMap.get(squareName);
-        if (!squareMarkers.includes(markerId)) {
+
+        const selectedMarkerIdInSquare = squareMarkers.indexOf(markerId);
+        if (selectedMarkerIdInSquare === -1) {
             squareMarkers.push(markerId);
             this.markersMap.set(squareName, squareMarkers);
             this.drawMarkerInSquare(squareName, markerId);
+        }
+        if (forceRemove && selectedMarkerIdInSquare > -1) {
+            squareMarkers.splice(selectedMarkerIdInSquare, 1);
+            console.log(squareMarkers)
+            this.markersMap.set(squareName, squareMarkers);
+            this.drawMarkersFromMapBySquareName(squareName);
         }
     }
 
@@ -116,19 +154,6 @@ export default class Chess {
         coordinatesItems.forEach(coorItem => {
             svgCoordinates.appendChild(coorItem);
         })
-
-        // setTimeout(() => {
-        //     this.actionsBridge.onDomainB();
-        //     this.actionsBridge.onDomainW();
-
-        //     Svg.addMarkerRect('d6', true);
-        //     Svg.addMarkerNotation('d6', 'x');
-        //     Svg.addMarkerMoveLast('g3');
-        //     Svg.addMarkerMoveLast('d6');
-
-        //     Svg.addMarkerCircle('c7');
-        //     Svg.addMarkerNotation('c7', '10');
-        // }, 1000)
     }
 
     drawPiecesFromMap() {
@@ -154,6 +179,17 @@ export default class Chess {
                 this.drawMarkerInSquare(squareKey, markerItemId);
             })
         })
+    }
+
+    drawMarkersFromMapBySquareName(squareName) {
+        //remove all markers first
+        Svg.removeSquareMarkers(squareName);
+        // Redraw markers from map
+        const squareMarkers = this.markersMap.get(squareName);
+        squareMarkers.forEach(markerItemId => {
+            this.drawMarkerInSquare(squareName, markerItemId);
+        })
+
     }
 
     drawMarkerInSquare(squareName, markerId) {
@@ -420,10 +456,10 @@ export default class Chess {
                 this.flipBoard()
             },
             movePiecesFromSquares: async(originSquare, targetSquare) => {
-                this.move(originSquare, targetSquare);
+                return this.move(originSquare, targetSquare);
             },
             onAddMarker: (squareTarget, markerId) => {
-                this.addMarkerToSquare(squareTarget, markerId);
+                this.addMarkerToSquare(squareTarget, markerId, true);
             },
             onAdd: (square, letter, color) => {
                 if (!square) { return; }

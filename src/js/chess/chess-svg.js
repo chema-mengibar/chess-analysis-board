@@ -4,6 +4,17 @@ import Utils from './chess-utils.js';
 const boardSize = 90;
 const div = (boardSize / 8);
 
+
+
+
+function removeSquareMarkers(squareName) {
+    const children = document.getElementById(`markers-${squareName}`).children;
+    // Change live list, iterate reverse order
+    for (var i = children.length - 1; i >= 0; --i) {
+        children[i].remove();
+    }
+}
+
 function addMarkerCircle(squareName, type = null) {
     let typeMarker = 'neutral'
     if (type === white) {
@@ -150,7 +161,8 @@ export default {
     addMarkerNotation,
     createSquare,
     setPieceInSquare,
-    createCoordinates
+    createCoordinates,
+    removeSquareMarkers
 }
 
 /*

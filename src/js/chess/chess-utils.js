@@ -40,6 +40,45 @@ function asSquare(letter, color = white) {
 
 }
 
+function parseMapToFenStr(squaresMap) {
+    const rows = [8, 7, 6, 5, 4, 3, 2, 1];
+    const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+    let fenSquarePositions = '';
+
+    let emptyAccumulator = 0;
+
+    rows.forEach((row, rowIdx) => {
+        emptyAccumulator = 0;
+        cols.forEach((col) => {
+            const squareName = getCellKey(col, row);
+            const squarePiece = squaresMap.get(squareName)
+
+            if (squarePiece) {
+                if (emptyAccumulator !== 0) {
+                    fenSquarePositions += emptyAccumulator.toString();
+                    emptyAccumulator = 0;
+                }
+                const pieceLetter = squarePiece.color ? squarePiece.letter.toUpperCase() : squarePiece.letter.toLowerCase()
+                fenSquarePositions += pieceLetter;
+
+            } else {
+                emptyAccumulator += 1;
+            }
+
+        })
+        if (emptyAccumulator !== 0) {
+            fenSquarePositions += emptyAccumulator.toString();
+        }
+        if (rowIdx < rows.length - 1) {
+            fenSquarePositions += '/';
+        }
+
+    })
+    const fen = fenSquarePositions
+    return fen;
+}
+
 function parseFenStrToObject(fen) {
 
     const squaresKeyVal = {};
@@ -88,5 +127,6 @@ export default {
     createSquaresMap,
     createMarkersMap,
     parseFenStrToObject,
+    parseMapToFenStr,
     asSquare
 }
