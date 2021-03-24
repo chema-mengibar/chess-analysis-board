@@ -121,22 +121,22 @@ Wilfried Hoellrigl vs Alexander Baburin
 Oberwart Open (1991), Oberwart AUT, Jul-??   
 **fen:** `2r1r1k1/4qppp/1Rp5/2Ppb3/8/3Q4/4NPPP/1R4K1 w - - 2 27`
 
-**Black Queen - attacked squares**
+**Black Queen - attacked squares**  
 ![game-ex-02](./docs/readme-assets/features-gifs/db1bf81b-30f4-46fa-84e3-9dedd59e7c27.jpg)
 
-**White Rook - attacked squares**
+**White Rook - attacked squares**  
 ![game-ex-02](./docs/readme-assets/features-gifs/58c6a137-3870-4d55-a37d-ffccfcfdbcff.jpg)
 
-**White Queen - supported squares, colors domains**
+**White Queen - supported squares, colors domains**  
 ![game-ex-02](./docs/readme-assets/features-gifs/243f3510-470c-4d03-bf95-d32538a62e77.jpg)
 
-**White Pieces - supported**
+**White Pieces - supported**  
 ![game-ex-02](./docs/readme-assets/features-gifs/849454b3-1bae-45d6-a0d7-30f9245886ae.jpg)
 
-**White Rook - attacked squares**
+**White Rook - attacked squares**  
 ![game-ex-02](./docs/readme-assets/features-gifs/5160043b-faea-4798-9fc2-a0084de723c2.jpg)
 
-**White Pieces - attacked**
+**White Pieces - attacked**  
 ![game-ex-02](./docs/readme-assets/features-gifs/72188865-7ad4-4106-9e49-e1a9e04f7a57.jpg)
 
 
