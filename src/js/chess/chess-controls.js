@@ -145,6 +145,11 @@ export default class ChessControl {
             self.callBacks.onToggleMarkers();
         }, false);
 
+        const buttonFenLoad = document.getElementById("button-fen-load");
+        buttonFenLoad.addEventListener('click', function() {
+            self.callBacks.onLoadFenFromInput();
+        }, false);
+
 
     }
 

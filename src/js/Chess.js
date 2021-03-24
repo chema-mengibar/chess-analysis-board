@@ -101,6 +101,12 @@ export default class Chess {
         }
     }
 
+    loadFenFromInput() {
+        const fenInputStr = document.getElementById("fen-input").value;
+        this.fenToMap(fenInputStr);
+        this.drawPiecesFromMap();
+    }
+
     // ----------------------------------------------- Moves control
 
     jumpToMove(moveIdx) {
@@ -525,6 +531,10 @@ export default class Chess {
             },
             onToggleMarkers: () => {
                 Svg.toggleShowMarkersContainer();
+
+            },
+            onLoadFenFromInput: () => {
+                this.loadFenFromInput();
             }
         }
     }
