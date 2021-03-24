@@ -12,7 +12,7 @@ const fensExamples = [
 ]
 
 const configA = {
-    fen: null,
+    // fen: '',
     asIcon: true,
     asLines: true,
     withLimitation: true,
