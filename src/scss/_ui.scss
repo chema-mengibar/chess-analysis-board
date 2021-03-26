@@ -24,23 +24,23 @@ body {
 
 .chess-panel-board {
     height: auto;
-    padding: 20px;
+    padding: 10px 20px;
     -webkit-box-shadow: 1px 6px 13px 1px rgba(0, 0, 0, 0.5);
     box-shadow: 1px 6px 13px 1px rgba(0, 0, 0, 0.5);
 }
 
 .chess-panel-control {
     flex-grow: 1;
-    padding: 20px;
+    padding: 20px 10px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
 .control-section {
-    padding: 10px;
     border-top: 1px solid var(--color-ui-section-sep);
     color: var(--color-ui-section-text);
     font-size: 16px;
+    padding:10px 0;
 }
 
 h1 {
@@ -55,55 +55,147 @@ h2 {
     font-size: 16px;
 }
 
-.control-section_buttons {
+
+button{
+    border-radius: 5px;
+    background-color: var( --color-ui-button-bg);
+    cursor: pointer;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    outline: none;
+    border: 0;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: center;
+    color: var(--color-ui-button-text);
+}
+
+.chess-navigation{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height:auto;
+    padding: 5px 0;
+    margin-top: 10px;
+   
+    .button-nav{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 25px;
+        background-color: var( --color-ui-button-bg);
+
+        &:active:not(:disabled) ,  &:active:not([disabled]) {
+            background-color: var( --color-ui-button-focus-bg);
+            transform: translateY(4px);
+            transition-delay: 0s;
+        }
+
+        &:disabled,
+        &[disabled]{
+            opacity:.5;
+            cursor: not-allowed;
+        };
+
+        .button__nav-icon {
+            display: block;
+            width: 22px;
+            height: 15px;
+        }
+
+
+    }
+
+    .button-nav+.button-nav{
+        margin-left: 5px;
+    }
+
+}
+
+
+.control-section__buttons {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 10px;
+        
     &+& {
-        border-top: 1px dashed var(--color-ui-section-sep);
+        // border-top: 1px dashed var(--color-ui-section-sep);
+        padding-top:5px;
+        margin-top:5px;
     }
     textarea+button {
         margin-top: 10px;
     }
+    button+button {
+        margin-left:2px;
+    }
+
     // Buttons
-    .button {
-        height: 35px;
-        min-width: 45%;
-        padding: 0px 8px;
-        margin-bottom: 20px;
-        line-height: 35px;
-        border: 0;
-        border-radius: 5px;
-        background-color: var( --color-ui-button-bg);
-        color: var(--color-ui-button-text);
-        text-decoration: none;
-        font-weight: 400;
-        font-size: 14px;
-        cursor: pointer;
-        -webkit-appearance: none;
-        -webkit-font-smoothing: antialiased;
-        outline: none;
-        &:only-child {
-            width: 100%;
+    button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 120px;
+        width: 120px;
+        padding: 10px;
+        margin-top:2px;
+       
+
+        &.button-marker{
+            width: 50px;
+            height: 50px;
         }
+
+        &.button-add-fig {
+            width: calc(90% / 6);
+            height: 50px;
+            font-size: 25px;
+            &.white {
+                color: var(--color-board-piece-white);
+            }
+            &.black {
+                color: var(--color-board-piece-black);
+            }
+        }
+
+        &.with-no-icon{
+            height: 50px;
+            line-height: 50px;
+            padding: 0 10px;
+        }
+
+        &.with-pos-right{
+            margin-left: auto;
+        }
+
+        span {
+            line-height: 16px;
+           
+        };
+  
+
+        &:active:not(:disabled) ,  &:active:not([disabled]) {
+            background-color: var( --color-ui-button-focus-bg);
+            transform: translateY(4px);
+            transition-delay: 0s;
+        }
+        &:disabled,
+        &[disabled]{
+            opacity:.5;
+            cursor: not-allowed;
+        };
     }
-    .button-add-fig {
-        width: calc(90% / 6);
-        height: 50px;
-        font-size: 25px;
-        &.white {
-            color: var(--color-board-piece-white);
-        }
-        &.black {
-            color: var(--color-board-piece-black);
-        }
-    }
-    .button:active {
-        background-color: var( --color-ui-button-focus-bg);
-        transform: translateY(4px);
-        transition-delay: 0s;
+
+    .button__icon {
+        display: block;
+        width: 60px;
+        height: 60px;
+        margin-bottom: 10px;
+        text-align: center;
     }
 }
 
