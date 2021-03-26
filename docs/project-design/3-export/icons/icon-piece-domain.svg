@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:square;stroke-miterlimit:10;">
+    <g id="icon-piece-domain" transform="matrix(0.444444,0,0,1.17532,-54.53,-199.434)">
+        <g transform="matrix(2.25,0,0,0.850831,-1607.17,-1132.31)">
+            <path d="M787.857,1565.28L793.419,1576.41L782.296,1576.41L787.857,1565.28Z" style="fill:rgb(0,154,255);"/>
+        </g>
+        <g transform="matrix(0.552398,0,0,0.197893,109.542,-332.372)">
+            <rect x="146" y="2575.05" width="89.365" height="90.954" style="fill:rgb(0,154,255);fill-opacity:0.15;stroke:rgb(0,154,255);stroke-width:3.72px;"/>
+        </g>
+        <g transform="matrix(0.552398,0,0,0.197893,60.1773,-314.373)">
+            <rect x="146" y="2575.05" width="89.365" height="90.954" style="fill:none;stroke:rgb(0,154,255);stroke-opacity:0.47;stroke-width:3.72px;"/>
+        </g>
+    </g>
+</svg>
