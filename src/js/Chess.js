@@ -33,6 +33,11 @@ export default class Chess {
         this.render();
         this.chessControls = new ChessControls(this.actionsBridge);
 
+        this.state = {
+            isDomainWhiteOn: false,
+            isDomainBlackOn: false
+        }
+
     }
 
     lab() {
@@ -308,6 +313,7 @@ export default class Chess {
         squaresInDomain.forEach(squareName => {
             document.getElementById(`base-${squareName}`).classList.add(domainClassName);
         })
+
     }
 
     drawDomainBySquare(squareName) {
@@ -325,13 +331,11 @@ export default class Chess {
         }
     }
 
-    drawClearDomains() {
-        const classNameWhite = this.getDomainClassNameByColor(white);
-        const classNameBlack = this.getDomainClassNameByColor(black);
+    drawClearDomains(color = white) {
+        const classNameColor = this.getDomainClassNameByColor(color);
         this.squaresMap.forEach((_, squareName) => {
             const classList = document.getElementById(`base-${squareName}`).classList;
-            classList.remove(classNameWhite);
-            classList.remove(classNameBlack);
+            classList.remove(classNameColor);
         });
     }
 
@@ -510,13 +514,37 @@ export default class Chess {
                 this.drawPiecesFromMap();
             },
             onDomainW: async() => {
-                this.drawDomainByColor(white);
+                if (!this.state.isDomainWhiteOn) {
+                    this.drawDomainByColor(white);
+                    this.state.isDomainWhiteOn = true;
+                } else {
+                    this.drawClearDomains(white);
+                    this.state.isDomainWhiteOn = false;
+                }
             },
             onDomainB: async() => {
-                this.drawDomainByColor(black);
+                if (!this.state.isDomainBlackOn) {
+                    this.drawDomainByColor(black);
+                    this.state.isDomainBlackOn = true;
+
+                } else {
+                    this.drawClearDomains(black);
+                    this.state.isDomainBlackOn = false;
+                }
             },
-            onDomainsHide: async() => {
-                this.drawClearDomains();
+            onDomainsToggle: async() => {
+                if (this.state.isDomainWhiteOn || this.state.isDomainBlackOn) {
+                    this.drawClearDomains(white);
+                    this.drawClearDomains(black);
+                    this.state.isDomainWhiteOn = false;
+                    this.state.isDomainBlackOn = false;
+                } else {
+                    this.drawDomainByColor(white);
+                    this.drawDomainByColor(black);
+                    this.state.isDomainWhiteOn = true;
+                    this.state.isDomainBlackOn = true;
+                }
+
             },
             onDomainsSquare: async(squareName) => {
                 this.drawDomainBySquare(squareName);

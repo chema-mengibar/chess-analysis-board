@@ -59,7 +59,7 @@
                         </svg>
                         <span>Square <br /> attacks</span>
                     </button>
-                    <button id="button-paint-support-square" >
+                    <button id="button-paint-support-square">
                         <svg class="button__icon">
                             <use href="#icon-square-support"></use>
                         </svg>
@@ -73,39 +73,38 @@
                         </svg>
                         <span>Piece <br /> domain</span>
                       </button>
-                      <button id="button-paint-domain-attack-square">
+                    <button id="button-paint-domain-attack-square">
                         <svg class="button__icon">
                             <use href="#icon-piece-domain-attack"></use>
                         </svg>
                         <span>Piece domain <br /> attack</span>
                       </button>
-                      <button disabled >
+                    <button disabled>
                         <svg class="button__icon">
                             <use href="#icons-offensive-1"></use>
                         </svg>
                         <span>Piece +1 <br /> offensive</span>
                       </button>
-                      <button id="button-paint-support-square-domain">
+                    <button id="button-paint-support-square-domain">
                         <svg class="button__icon">
                             <use href="#icon-piece-domain-support"></use>
                         </svg>
                         <span>Piece domain <br /> support</span>
                       </button>
-                </div>  
+                </div>
                 <div class="control-section__buttons">
-                    <button disabled class="button"  id="button-hide-domains-wb"> 
-                        Hide domains
-                        <i>(to remove)</i>
-                    </button>
-                    <button disabled class="button" id="button-paint-domains-wb" >
-                        Show both
-                        <i>(to remove)</i>
-                    </button>
-                    <button disabled id="button-hide-domains-wb" data-todo="change hide by toogle">
+
+                    <button id="button-toggle-domains" data-todo="change hide by toogle">
                         <svg class="button__icon">
                             <use href="#icon-domains-toggle"></use>
                         </svg>
                         <span>Toggle <br /> domains</span>
+                    </button>
+                    <button id="button-paint-domains-w">
+                        <svg class="button__icon">
+                            <use href="#icon-domains-white"></use>
+                        </svg>
+                        <span>Whites <br /> domain</span>
                     </button>
                     <button id="button-paint-domains-b">
                         <svg class="button__icon">
@@ -113,15 +112,10 @@
                         </svg>
                         <span>Blacks <br /> domain</span>
                     </button>
-                    <button  id="button-paint-domains-w">
-                        <svg class="button__icon">
-                            <use href="#icon-domains-white"></use>
-                        </svg>
-                        <span>Whites <br /> domain</span>
-                    </button>
+
                 </div>
                 <div class="control-section__buttons">
-                    <button disabled id="button-markers-remove" >
+                    <button disabled id="button-markers-remove">
                         <svg class="button__icon">
                             <use href="#icons-extras-remove"></use>
                         </svg>
@@ -141,14 +135,14 @@
                         </svg>
                         <span>Center</span>
                       </button>
-                      
-                      <button disabled>
+
+                    <button disabled>
                         <svg class="button__icon">
                             <use href="#icon-flank-king"></use>
                         </svg>
                         <span>Flank <br /> King</span>
                       </button>
-                      <button disabled>
+                    <button disabled>
                         <svg class="button__icon">
                             <use href="#icon-flank-queen"></use>
                         </svg>
@@ -213,11 +207,11 @@
                     <button id="button-clear-square" class="with-no-icon"> Clear square </button>
                 </div>
             </div>
-    
+
             <div class="control-section">
                 <h1> Board </h1>
                 <div class="control-section__buttons">
-                    <button class="button" id="button-board-flip"  > 
+                    <button class="button" id="button-board-flip"> 
                         <svg class="button__icon"> 
 
                         </svg>
@@ -241,7 +235,7 @@
                 <h2> Fen </h2>
                 <div class="control-section__buttons">
                     <small>rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1</small>
-                    <textarea id="fen-input" name="fen-input" rows="3" cols="50">rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1</textarea>
+                    <textarea id="fen-input" name="fen-input" rows="3" cols="50"></textarea>
                     <button class="with-no-icon with-pos-right" id="button-fen-load" type="button"> Load fen</button>
                 </div>
             </div>

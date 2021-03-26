@@ -79,11 +79,6 @@ export default class ChessControl {
             self.callBacks.onDomainB();
         }, false);
 
-        const buttonDomainWB = document.getElementById("button-paint-domains-wb");
-        buttonDomainWB.addEventListener('click', function() {
-            self.callBacks.onDomainW();
-            self.callBacks.onDomainB();
-        }, false);
 
         const buttonClear = document.getElementById("button-clear");
         buttonClear.addEventListener('click', function() {
@@ -95,9 +90,9 @@ export default class ChessControl {
             self.callBacks.onInit();
         }, false);
 
-        const buttonHideDomains = document.getElementById("button-hide-domains-wb");
-        buttonHideDomains.addEventListener('click', function() {
-            self.callBacks.onDomainsHide();
+        const buttonDomainsToggle = document.getElementById("button-toggle-domains");
+        buttonDomainsToggle.addEventListener('click', function() {
+            self.callBacks.onDomainsToggle();
         }, false);
 
         const buttonSquareDomains = document.getElementById("button-paint-domains-square");
