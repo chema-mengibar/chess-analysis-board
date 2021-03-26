@@ -302,6 +302,11 @@ export default class Chess {
     }
 
     drawDomainByColor(color = white) {
+        if(color){
+            this.state.isDomainWhiteOn = true;
+        }else{
+            this.state.isDomainBlackOn = true;
+        }
         const domainClassName = this.getDomainClassNameByColor(color);
         const squaresInDomain = []
         this.squaresMap.forEach((squareEntry, squareName) => {
@@ -332,6 +337,11 @@ export default class Chess {
     }
 
     drawClearDomains(color = white) {
+        if(color){
+            this.state.isDomainWhiteOn = false;
+        }else{
+            this.state.isDomainBlackOn = false;
+        }
         const classNameColor = this.getDomainClassNameByColor(color);
         this.squaresMap.forEach((_, squareName) => {
             const classList = document.getElementById(`base-${squareName}`).classList;
@@ -516,33 +526,26 @@ export default class Chess {
             onDomainW: async() => {
                 if (!this.state.isDomainWhiteOn) {
                     this.drawDomainByColor(white);
-                    this.state.isDomainWhiteOn = true;
+                    
                 } else {
                     this.drawClearDomains(white);
-                    this.state.isDomainWhiteOn = false;
                 }
             },
             onDomainB: async() => {
                 if (!this.state.isDomainBlackOn) {
                     this.drawDomainByColor(black);
-                    this.state.isDomainBlackOn = true;
 
                 } else {
                     this.drawClearDomains(black);
-                    this.state.isDomainBlackOn = false;
                 }
             },
             onDomainsToggle: async() => {
                 if (this.state.isDomainWhiteOn || this.state.isDomainBlackOn) {
                     this.drawClearDomains(white);
                     this.drawClearDomains(black);
-                    this.state.isDomainWhiteOn = false;
-                    this.state.isDomainBlackOn = false;
                 } else {
                     this.drawDomainByColor(white);
                     this.drawDomainByColor(black);
-                    this.state.isDomainWhiteOn = true;
-                    this.state.isDomainBlackOn = true;
                 }
 
             },
@@ -555,8 +558,10 @@ export default class Chess {
             onAttacksSquare: async(squareName) => {
                 this.drawAttacksToSquare(squareName)
             },
-            onRemoveMarkers: () => {
-                this.drawRemoveAllMarkers()
+            onRemoveVisuals: () => {
+                this.drawRemoveAllMarkers();
+                this.drawClearDomains(white);
+                this.drawClearDomains(black);
             },
             onToggleMarkers: () => {
                 Svg.toggleShowMarkersContainer();

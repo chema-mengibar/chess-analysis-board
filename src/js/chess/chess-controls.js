@@ -130,9 +130,9 @@ export default class ChessControl {
             self.clearSelectedSquareFromBuffer();
         }, false);
 
-        const buttonMarkersRemove = document.getElementById("button-markers-remove");
-        buttonMarkersRemove.addEventListener('click', function() {
-            self.callBacks.onRemoveMarkers();
+        const buttonVisualsRemove = document.getElementById("button-visuals-remove");
+        buttonVisualsRemove.addEventListener('click', function() {
+            self.callBacks.onRemoveVisuals();
         }, false);
 
         const buttonMarkersToggle = document.getElementById("button-markers-toggle");
