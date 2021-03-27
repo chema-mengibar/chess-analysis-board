@@ -1,4 +1,5 @@
 import Chess from './js/Chess.js'
+import Url from './js/utils/url.js'
 import './index.scss';
 
 // const fensExamples = [
@@ -8,10 +9,21 @@ import './index.scss';
 //     'Rr6/8/3B4/ppPpq2k/4P1K1/8/8/8 w KQkq - 0 1',
 //     'r3kb1r/ppp1n1pp/2nB1p2/3p4/3P2b1/2P2N2/PP1NQPPP/R3KB1R xx',
 //     '8/8/1N6/8/8/R3n3/8/8 xx', // onAttacksSquare feature example
+//     '8/8/1N6/8/8/R3n3/8/8 xx', // onAttacksSquare feature example
 // ];
 
+
+const urlParams = Url.getParamsFromUrl(window.location.href);
+
+console.log('urlParams', urlParams);
+
+let fenToLoad = null;
+if ('fen' in urlParams) {
+    fenToLoad = urlParams.fen;
+}
+
 const configA = {
-    // fen: '',
+    fen: fenToLoad,
     asIcon: true,
     asLines: true,
     withLimitation: true,

@@ -28,7 +28,8 @@ export default class Chess {
         this.squaresMap = Utils.createSquaresMap(rows, cols);
         this.markersMap = Utils.createMarkersMap(rows, cols);
 
-        const fenStr = ('fen' in config) ? config.fen : fenBase;
+        const fenStr = config.fen || fenBase;
+
         this.fenToMap(fenStr);
         this.render();
         this.chessControls = new ChessControls(this.actionsBridge);
@@ -41,9 +42,9 @@ export default class Chess {
     }
 
     lab() {
-        // this.drawMarkerInSquare('e4', 'cb');
-        // this.drawMarkerInSquare('d3', 're');
-        // this.drawMarkerInSquare('a1', 'ro');
+        // this.drawMarkerInSquare('e4', 'id');
+        // this.drawMarkerInSquare('d3', 'id');
+        // this.drawMarkerInSquare('a1', 'id');
 
         // this.addMarkerToSquare('e4', 'marker-circle-white');
         // this.actionsBridge.onDomainB()
@@ -111,6 +112,11 @@ export default class Chess {
         const fenInputStr = document.getElementById("fen-input").value;
         this.fenToMap(fenInputStr);
         this.drawPiecesFromMap();
+    }
+
+    loadFenToInput() {
+        const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+        document.getElementById("fen-input").value = currentFen;
     }
 
     // ----------------------------------------------- Moves control
@@ -213,27 +219,21 @@ export default class Chess {
 
     drawMarkerInSquare(squareName, markerId) {
         switch (markerId) {
-            case 'cw':
             case 'marker-circle-white':
                 Svg.addMarkerCircle(squareName, true);
                 break;
-            case 'cn':
             case 'marker-circle-neutral':
                 Svg.addMarkerCircle(squareName);
                 break;
-            case 'cb':
             case 'marker-circle-black':
                 Svg.addMarkerCircle(squareName, false);
                 break;
-            case 'm':
             case 'marker-move-last':
                 Svg.addMarkerMoveLast(squareName);
                 break;
-            case 'ro':
             case 'marker-rect-ok':
                 Svg.addMarkerRect(squareName, true);
                 break;
-            case 're':
             case 'marker-rect-error':
                 Svg.addMarkerRect(squareName, false);
                 break;
@@ -254,7 +254,7 @@ export default class Chess {
 
 
     // ----------------------------------------------- Engine
-    getSquarePieceAllowedSquares(squareName) {
+    getSquarePieceAllowedSquares(squareName, forcedPieceAndColor = null) {
 
         const limitation = this.config.withLimitation;
 
@@ -267,7 +267,7 @@ export default class Chess {
         const squareColumnLetter = squareNameParts[0];
         const squareRowNumber = parseInt(squareNameParts[1], 10);
 
-        const { letter, color } = this.squaresMap.get(squareName);
+        const { letter, color } = forcedPieceAndColor ? forcedPieceAndColor : this.squaresMap.get(squareName);
 
         if (letter === 'r') {
             const squareOptions = Squares.getSquaresOptionsFromSquareWithR(this.squaresMap, squareColumnLetter, squareRowNumber, limitation);
@@ -302,9 +302,9 @@ export default class Chess {
     }
 
     drawDomainByColor(color = white) {
-        if(color){
+        if (color) {
             this.state.isDomainWhiteOn = true;
-        }else{
+        } else {
             this.state.isDomainBlackOn = true;
         }
         const domainClassName = this.getDomainClassNameByColor(color);
@@ -318,16 +318,13 @@ export default class Chess {
         squaresInDomain.forEach(squareName => {
             document.getElementById(`base-${squareName}`).classList.add(domainClassName);
         })
-
     }
 
     drawDomainBySquare(squareName) {
         const squarePiece = this.squaresMap.get(squareName);
         if (squarePiece) {
-
             const markerIdBySquareColor = this.getMarkerCircleIdByColor(squarePiece.color);
             this.addMarkerToSquare(squareName, markerIdBySquareColor);
-
             const squaresFromFigure = this.getSquarePieceAllowedSquares(squareName);
             squaresFromFigure.forEach(domainSquareName => {
                 const classNameDomain = this.getDomainClassNameByColor(squarePiece.color);
@@ -337,9 +334,9 @@ export default class Chess {
     }
 
     drawClearDomains(color = white) {
-        if(color){
+        if (color) {
             this.state.isDomainWhiteOn = false;
-        }else{
+        } else {
             this.state.isDomainBlackOn = false;
         }
         const classNameColor = this.getDomainClassNameByColor(color);
@@ -349,7 +346,53 @@ export default class Chess {
         });
     }
 
-    drawAttacksToSquare(squareName) {
+    drawAttackFromSquare(squareName) {
+        // todo
+        if (!squareName) {
+            return;
+        }
+        const squarePiece = this.squaresMap.get(squareName);
+        if (squarePiece) {
+            const squareOptions = this.getSquarePieceAllowedSquares(squareName);
+            const markerIdByColor = this.getMarkerCircleIdByColor(squarePiece.color);
+            squareOptions.forEach(optionSquareKey => {
+                const pieceInOptionSquare = this.squaresMap.get(optionSquareKey);
+                if (pieceInOptionSquare && pieceInOptionSquare.color !== squarePiece.color) {
+                    // target!
+                    this.addMarkerToSquare(optionSquareKey, markerIdByColor);
+                }
+            })
+        }
+    }
+
+    drawAttackFromSquareDomain(squareName) {
+        if (!squareName) {
+            return;
+        }
+        const squarePiece = this.squaresMap.get(squareName);
+        if (squarePiece) {
+            const markerIdByColor = this.getMarkerCircleIdByColor(squarePiece.color);
+            const squareOptions = this.getSquarePieceAllowedSquares(squareName);
+            this.drawDomainBySquare(squareName);
+            squareOptions.forEach(domainSquareName => {
+                const ghostPieceInDomain = squarePiece;
+                const squareNextOptions = this.getSquarePieceAllowedSquares(domainSquareName, ghostPieceInDomain);
+                squareNextOptions.forEach(nextDomainSquareName => {
+                    const pieceInOptionSquare = this.squaresMap.get(nextDomainSquareName);
+                    if (pieceInOptionSquare && pieceInOptionSquare.color !== squarePiece.color) {
+                        // target!
+                        this.addMarkerToSquare(squareName, 'marker-circle-neutral');
+                        this.addMarkerToSquare(domainSquareName, markerIdByColor);
+                        this.addMarkerToSquare(nextDomainSquareName, markerIdByColor);
+                    }
+                });
+
+            });
+
+        }
+    }
+
+    drawDangerToSquare(squareName) {
         if (!squareName) {
             return;
         }
@@ -377,18 +420,18 @@ export default class Chess {
         }
     }
 
-    drawAttacksToSquareDomain(squareName) {
+
+    drawDangerToSquareDomain(squareName) {
         if (!squareName) {
             return;
         }
         let isSquareSave = true;
         const squarePiece = this.squaresMap.get(squareName);
         if (squarePiece) {
-
             const squaresOptionsFromFigure = this.getSquarePieceAllowedSquares(squareName);
             squaresOptionsFromFigure.forEach(domainSquareName => {
-                const classNameDomain = this.getDomainClassNameByColor(squarePiece.color);
-                document.getElementById(`base-${domainSquareName}`).classList.add(classNameDomain);
+
+                this.drawDomainBySquare(squareName);
 
                 this.squaresMap.forEach((squareMapValue, squareMapKey) => {
                     if (squareMapKey !== squareName && squareMapValue && squareMapValue.color !== squarePiece.color) {
@@ -400,7 +443,7 @@ export default class Chess {
                         uniques.forEach((commonSquare) => {
                             const markerIdByColor = this.getMarkerCircleIdByColor(squareMapValue.color);
                             this.addMarkerToSquare(squareMapKey, markerIdByColor);
-                            this.addMarkerToSquare(commonSquare, 'marker-circle-neutral');
+                            this.addMarkerToSquare(commonSquare, markerIdByColor);
 
                         })
                         if (uniques.length > 0) {
@@ -412,8 +455,8 @@ export default class Chess {
             if (isSquareSave) {
                 this.addMarkerToSquare(squareName, 'marker-rect-ok');
             } else {
-                const markerIdBySquareColor = this.getMarkerCircleIdByColor(squarePiece.color);
-                this.addMarkerToSquare(squareName, markerIdBySquareColor);
+
+                this.addMarkerToSquare(squareName, 'marker-circle-neutral');
             }
         }
     }
@@ -453,11 +496,10 @@ export default class Chess {
         let isSquareSupported = false;
         const squarePiece = this.squaresMap.get(squareName);
         if (squarePiece) {
+            this.drawDomainBySquare(squareName);
 
             const squaresOptionsFromFigure = this.getSquarePieceAllowedSquares(squareName);
             squaresOptionsFromFigure.forEach(domainSquareName => {
-                const classNameDomain = this.getDomainClassNameByColor(squarePiece.color);
-                document.getElementById(`base-${domainSquareName}`).classList.add(classNameDomain);
 
                 this.squaresMap.forEach((squareMapValue, squareMapKey) => {
                     if (squareMapKey !== squareName && squareMapValue && squareMapValue.color === squarePiece.color) {
@@ -469,7 +511,7 @@ export default class Chess {
                         uniques.forEach((commonSquare) => {
                             const markerIdByColor = this.getMarkerCircleIdByColor(squareMapValue.color);
                             this.addMarkerToSquare(squareMapKey, markerIdByColor);
-                            this.addMarkerToSquare(commonSquare, 'marker-circle-neutral');
+                            this.addMarkerToSquare(commonSquare, markerIdByColor);
 
                         })
                         if (uniques.length > 0) {
@@ -479,7 +521,7 @@ export default class Chess {
                 })
             })
             if (isSquareSupported) {
-                this.addMarkerToSquare(squareName, 'marker-rect-ok');
+                this.addMarkerToSquare(squareName, 'marker-circle-neutral');
             } else {
                 this.addMarkerToSquare(squareName, 'marker-rect-error');
             }
@@ -526,7 +568,7 @@ export default class Chess {
             onDomainW: async() => {
                 if (!this.state.isDomainWhiteOn) {
                     this.drawDomainByColor(white);
-                    
+
                 } else {
                     this.drawClearDomains(white);
                 }
@@ -552,11 +594,17 @@ export default class Chess {
             onDomainsSquare: async(squareName) => {
                 this.drawDomainBySquare(squareName);
             },
-            onDomainAttacksSquare: async(squareName) => {
-                this.drawAttacksToSquareDomain(squareName);
+            onDomainDangerSquare: async(squareName) => {
+                this.drawDangerToSquareDomain(squareName);
             },
-            onAttacksSquare: async(squareName) => {
-                this.drawAttacksToSquare(squareName)
+            onDomainAttacksSquare: async(squareName) => {
+                this.drawAttackFromSquareDomain(squareName);
+            },
+            onShowAttackSquare: async(squareName) => {
+                this.drawAttackFromSquare(squareName)
+            },
+            onDangerSquare: async(squareName) => {
+                this.drawDangerToSquare(squareName)
             },
             onRemoveVisuals: () => {
                 this.drawRemoveAllMarkers();
@@ -569,6 +617,28 @@ export default class Chess {
             },
             onLoadFenFromInput: () => {
                 this.loadFenFromInput();
+            },
+            onLoadFenToInput: () => {
+                this.loadFenToInput();
+            },
+            onCreateLink: () => {
+                const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+                const linkHref = `${window.location.origin}?fen=${currentFen}`;
+                try {
+
+                    let myTemporaryInputElement = document.createElement('input');
+                    myTemporaryInputElement.type = 'text';
+                    myTemporaryInputElement.value = linkHref;
+
+                    document.body.appendChild(myTemporaryInputElement);
+
+                    myTemporaryInputElement.select();
+                    document.execCommand('Copy');
+
+                    document.body.removeChild(myTemporaryInputElement);
+                } catch (e) {
+                    console.error('[CHESS] copy:', e);
+                }
             }
         }
     }

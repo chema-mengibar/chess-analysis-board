@@ -30,6 +30,11 @@
                       </svg>
             </div>
             <div class="chess-navigation">
+                <button class="button-nav" id="button-visuals-remove">
+                    <svg class="button__control-icon">
+                        <use href="#icons-extras-remove"></use>
+                    </svg>
+                </button>
                 <button disabled class="button-nav" id="button-nav-prev">
                     <svg class="button__nav-icon">
                         <use href="#icon-move-prev"></use>
@@ -51,44 +56,57 @@
             <div class="control-section">
                 <h1> Visualization <small>(&nbsp;Select a cell ﬁrst to add&nbsp;)</small></h1>
                 <div class="control-section__buttons">
-                    <button id="button-paint-attack-square">
-                        <svg class="button__icon">
-                            <use href="#icon-square-attack"></use>
-                        </svg>
-                        <span>Square <br /> attacks</span>
-                    </button>
+
                     <button id="button-paint-support-square">
                         <svg class="button__icon">
                             <use href="#icon-square-support"></use>
                         </svg>
                         <span>Square <br /> support</span>
                     </button>
+                    <button id="button-paint-danger-square">
+                        <svg class="button__icon">
+                            <use href="#icon-square-danger"></use>
+                        </svg>
+                        <span>Square <br /> danger</span>
+                    </button>
+                    <button id="button-paint-attack-square">
+                        <svg class="button__icon">
+                            <use href="#icon-square-attack"></use>
+                        </svg>
+                        <span>Square <br /> attack</span>
+                    </button>
                 </div>
                 <div class="control-section__buttons">
+
                     <button id="button-paint-domains-square">
                         <svg class="button__icon">
                             <use href="#icon-piece-domain"></use>
                         </svg>
                         <span>Piece <br /> domain</span>
-                      </button>
-                    <button id="button-paint-domain-attack-square">
-                        <svg class="button__icon">
-                            <use href="#icon-piece-domain-attack"></use>
-                        </svg>
-                        <span>Piece domain <br /> attack</span>
-                      </button>
-                    <button disabled>
-                        <svg class="button__icon">
-                            <use href="#icons-offensive-1"></use>
-                        </svg>
-                        <span>Piece +1 <br /> offensive</span>
-                      </button>
+                    </button>
+
                     <button id="button-paint-support-square-domain">
                         <svg class="button__icon">
                             <use href="#icon-piece-domain-support"></use>
                         </svg>
                         <span>Piece domain <br /> support</span>
                       </button>
+
+                    <button id="button-paint-domain-danger-square">
+                        <svg class="button__icon">
+                            <use href="#icon-piece-domain-danger"></use>
+                        </svg>
+                        <span>Piece domain <br /> danger</span>
+                    </button>
+
+                    <button id="button-paint-domain-attack-square">
+                        <svg class="button__icon">
+                            <use href="#icon-piece-domain-attack"></use>
+                        </svg>
+                        <span>Piece domain  <br /> attack</span>
+                    </button>
+
+
                 </div>
                 <div class="control-section__buttons">
 
@@ -113,12 +131,12 @@
 
                 </div>
                 <div class="control-section__buttons">
-                    <button id="button-visuals-remove">
+                    <!-- <button id="button-visuals-remove">
                         <svg class="button__icon">
                             <use href="#icons-extras-remove"></use>
                         </svg>
                         <span>Remove <br /> visuals</span>
-                    </button>
+                    </button> -->
                     <button disabled id="button-markers-toggle">
                         <svg class="button__icon">
                             <use href="#icon-extras-toggle"></use>
@@ -234,13 +252,19 @@
                 <div class="control-section__buttons">
                     <small>rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1</small>
                     <textarea id="fen-input" name="fen-input" rows="3" cols="50"></textarea>
-                    <button class="with-no-icon with-pos-right" id="button-fen-load" type="button"> Load fen</button>
+                    <button class="with-no-icon with-pos-right" id="button-fen-create-board"> Create board</button>
+                    <button class="with-no-icon with-pos-right" id="button-fen-create-fen"> Create fen</button>
                 </div>
-            </div>
+                <div class="control-section__buttons">
+                    <button class="with-no-icon" id="button-fen-create-link"> Copy fen link</button>
 
+                </div>
+
+
+
+            </div>
         </div>
-    </div>
-    <svg width="0" height="0" style="display:none" id="chess-panel-icons" xmlns="http://www.w3.org/2000/svg ">
+        <svg width="0" height="0" style="display:none" id="chess-panel-icons" xmlns="http://www.w3.org/2000/svg ">
         <symbol id="icon-move-next"  viewBox="0 0 22 30" >
             <g transform="matrix(1,0,0,1,-24,-7)">
                 <g transform="matrix(0.806452,0,0,0.806452,-575.484,-699.757)">
@@ -621,17 +645,48 @@
             </g>
         </symbol>
         <symbol id="icon-piece-domain-attack"  viewBox="0 0 60 60">
-            <g transform="matrix(0.444444,0,0,1.17532,-312.5,-198.652)">
+            <g transform="matrix(0.444444,0,0,1.17532,-445.5,-198.652)">
+                <g transform="matrix(-2.1572,0.0350915,0.0927986,-0.815739,2734.65,1363.08)">
+                    <g transform="matrix(-1.04495,-0.0449518,-0.0449518,-1.04495,867.592,1501.1)">
+                        <path d="M57.255,41.543L58.74,51.937L48.345,50.452L57.255,41.543Z" style="fill:rgb(255,0,0);"/>
+                        <path d="M47.617,40.814C47.617,40.814 50.966,44.163 53.988,47.185" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
+                    </g>
+                </g>
+                <g transform="matrix(2.1572,-0.0350915,-0.0927986,0.815739,-577.401,-979.31)">
+                    <g transform="matrix(1.04495,0.0449518,0.0449518,1.04495,794.354,1441.89)">
+                        <path d="M10.521,12.209L9.036,1.814L19.43,3.299L10.521,12.209Z" style="fill:rgb(255,0,0);"/>
+                        <path d="M20.159,12.937C20.159,12.937 16.81,9.589 13.787,6.566" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
+                    </g>
+                </g>
+                <g transform="matrix(2.25,0,0,0.850831,-693.421,-1145)">
+                    <path d="M787.857,1565.28L793.419,1576.41L782.296,1576.41L787.857,1565.28Z" style="fill:rgb(0,154,255);"/>
+                </g>
+                <g transform="matrix(2.25,0,0,0.850831,-742.786,-1127)">
+                    <g transform="matrix(1,-0,-0,1,775.627,1523.24)">
+                        <path d="M10.739,42.792L12.23,42.047L12.528,43.687L10.739,42.792Z" style="fill:rgb(0,154,255);fill-opacity:0.5;"/>
+                        <path d="M12.23,42.047L17.792,53.17L6.669,53.17C6.669,53.17 10.406,45.696 11.753,43.001" style="fill:none;stroke:rgb(0,154,255);stroke-opacity:0.5;stroke-width:0.89px;"/>
+                    </g>
+                </g>
+                <g transform="matrix(0.552398,0,0,0.197893,973.925,-327.056)">
+                    <rect x="146" y="2575.05" width="89.365" height="90.954" style="fill:none;stroke:rgb(0,154,255);stroke-width:3.72px;"/>
+                </g>
+                <g transform="matrix(0.552398,0,0,0.197893,924.56,-309.057)">
+                    <rect x="146" y="2575.05" width="89.365" height="90.954" style="fill:none;stroke:rgb(0,154,255);stroke-opacity:0.47;stroke-width:3.72px;"/>
+                </g>
+            </g>
+        </symbol>
+        <symbol id="icon-piece-domain-danger"  viewBox="0 0 60 60">
+            <g  transform="matrix(0.444444,0,0,1.17532,-312.5,-198.652)">
                 <g transform="matrix(2.1572,-0.0350915,-0.0927986,0.815739,-793.212,-948.68)">
                     <g transform="matrix(1.04495,0.0449518,0.0449518,1.04495,753.985,1402.6)">
-                        <path d="M47.604,48.209L46.119,37.814L56.514,39.299L47.604,48.209Z" style="fill:rgb(255,0,0);"/>
-                        <path d="M57.243,48.937C57.243,48.937 53.894,45.589 50.871,42.566" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
+                        <path d="M47.604,48.209L46.119,37.814L56.514,39.299L47.604,48.209Z" style="fill:rgb(255,189,0);"/>
+                        <path d="M57.243,48.937C57.243,48.937 53.894,45.589 50.871,42.566" style="fill:none;stroke:rgb(255,189,0);stroke-width:4px;"/>
                     </g>
                 </g>
                 <g transform="matrix(-2.1572,0.0350915,0.0927986,-0.815739,2353.09,1331.55)">
                     <g transform="matrix(-1.04495,-0.0449518,-0.0449518,-1.04495,827.7,1460.73)">
-                        <path d="M20.674,4.482L22.159,14.876L11.764,13.391L20.674,4.482Z" style="fill:rgb(255,0,0);"/>
-                        <path d="M11.036,3.753L17.407,10.124" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
+                        <path d="M20.674,4.482L22.159,14.876L11.764,13.391L20.674,4.482Z" style="fill:rgb(255,189,0);"/>
+                        <path d="M11.036,3.753L17.407,10.124" style="fill:none;stroke:rgb(255,189,0);stroke-width:4px;"/>
                     </g>
                 </g>
                 <g transform="matrix(2.25,0,0,0.850831,-1042.04,-1127)">
@@ -713,52 +768,41 @@
                 </g>
             </g>
         </symbol>
-        <symbol id="icons-offensive-1"  viewBox="0 0 60 60">
-            <g transform="matrix(0.444444,0,0,1.17532,-445.5,-198.652)">
-                <g transform="matrix(-2.1572,0.0350915,0.0927986,-0.815739,2734.65,1362.23)">
-                    <g transform="matrix(-1.04495,-0.0449518,-0.0449518,-1.04495,867.547,1500.06)">
-                        <path d="M57.255,40.543L58.74,50.937L48.345,49.452L57.255,40.543Z" style="fill:rgb(255,0,0);"/>
-                        <path d="M47.617,39.814C47.617,39.814 50.966,43.163 53.988,46.185" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
-                    </g>
-                </g>
-                <g transform="matrix(2.1572,-0.0350915,-0.0927986,0.815739,-577.401,-979.31)">
-                    <g transform="matrix(1.04495,0.0449518,0.0449518,1.04495,794.354,1441.89)">
-                        <path d="M10.521,12.209L9.036,1.814L19.43,3.299L10.521,12.209Z" style="fill:rgb(255,0,0);"/>
-                        <path d="M20.159,12.937C20.159,12.937 16.81,9.589 13.787,6.566" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
-                    </g>
-                </g>
-                <g transform="matrix(2.25,0,0,0.850831,-693.421,-1145)">
-                    <path d="M787.857,1565.28L793.419,1576.41L782.296,1576.41L787.857,1565.28Z" style="fill:rgb(0,154,255);"/>
-                </g>
-                <g transform="matrix(2.25,0,0,0.850831,-742.786,-1127)">
-                    <g transform="matrix(1,-0,-0,1,775.627,1523.24)">
-                        <path d="M10.739,42.792L12.23,42.047L12.528,43.687L10.739,42.792Z" style="fill:rgb(0,154,255);fill-opacity:0.5;"/>
-                        <path d="M12.23,42.047L17.792,53.17L6.669,53.17C6.669,53.17 10.406,45.696 11.753,43.001" style="fill:none;stroke:rgb(0,154,255);stroke-opacity:0.5;stroke-width:0.89px;"/>
-                    </g>
-                </g>
-                <g transform="matrix(0.552398,0,0,0.197893,973.925,-327.056)">
-                    <rect x="146" y="2575.05" width="89.365" height="90.954" style="fill:none;stroke:rgb(0,154,255);stroke-width:3.72px;"/>
-                </g>
-                <g transform="matrix(0.552398,0,0,0.197893,924.56,-309.057)">
-                    <rect x="146" y="2575.05" width="89.365" height="90.954" style="fill:none;stroke:rgb(0,154,255);stroke-opacity:0.47;stroke-width:3.72px;"/>
-                </g>
-            </g>
-        </symbol>
-        <symbol id="icon-square-attack"  viewBox="0 0 60 60">
-            <g transform="matrix(0.444444,0,0,1.17532,-46.0196,-77.33)">
+       
+        <symbol id="icon-square-danger"  viewBox="0 0 60 60">
+            <g  transform="matrix(0.444444,0,0,1.17532,-46.0196,-77.33)">
                 <g transform="matrix(0.552398,0,0,0.197893,66.7924,-427.108)">
                     <rect x="146" y="2575.05" width="89.365" height="90.954" style="fill:none;stroke:rgb(0,154,255);stroke-width:3.72px;"/>
                 </g>
                 <g transform="matrix(2.1572,-0.0350915,-0.0927986,0.815739,-1397.63,-1046.18)">
                     <g transform="matrix(1.04495,0.0449518,0.0449518,1.04495,755.93,1395.67)">
-                        <path d="M45.453,54.936L43.968,44.542L54.363,46.027L45.453,54.936Z" style="fill:rgb(255,0,0);"/>
-                        <path d="M55.092,55.665C55.092,55.665 51.743,52.316 48.72,49.294" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
+                        <path d="M45.453,54.936L43.968,44.542L54.363,46.027L45.453,54.936Z" style="fill:rgb(255,189,0);"/>
+                        <path d="M55.092,55.665C55.092,55.665 51.743,52.316 48.72,49.294" style="fill:none;stroke:rgb(255,189,0);stroke-width:4px;"/>
                     </g>
                 </g>
                 <g transform="matrix(-2.1572,0.0350915,0.0927986,-0.815739,1740.8,1229.85)">
                     <g transform="matrix(-1.04495,-0.0449518,-0.0449518,-1.04495,821.879,1462.35)">
-                        <path d="M15.025,6.271L16.51,16.665L6.116,15.18L15.025,6.271Z" style="fill:rgb(255,0,0);"/>
-                        <path d="M5.387,5.542C5.387,5.542 8.736,8.891 11.759,11.913" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
+                        <path d="M15.025,6.271L16.51,16.665L6.116,15.18L15.025,6.271Z" style="fill:rgb(255,189,0);"/>
+                        <path d="M5.387,5.542C5.387,5.542 8.736,8.891 11.759,11.913" style="fill:none;stroke:rgb(255,189,0);stroke-width:4px;"/>
+                    </g>
+                </g>
+            </g>
+        </symbol>
+        <symbol id="icon-square-attack"  viewBox="0 0 60 60">
+            <g  transform="matrix(0.444444,0,0,1.17532,-46.0196,-77.33)">
+                <g transform="matrix(0.552398,0,0,0.197893,66.7924,-427.108)">
+                    <rect x="146" y="2575.05" width="89.365" height="90.954" style="fill:none;stroke:rgb(0,154,255);stroke-width:3.72px;"/>
+                </g>
+                <g transform="matrix(-2.1572,0.0350915,0.0927986,-0.815739,1827.61,1263.03)">
+                    <g transform="matrix(-1.04495,-0.0449518,-0.0449518,-1.04495,863.947,1504.83)">
+                        <path d="M53.607,45.271L55.092,55.665L44.697,54.18L53.607,45.271Z" style="fill:rgb(255,0,0);"/>
+                        <path d="M43.968,44.542C43.968,44.542 47.317,47.891 50.34,50.913" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
+                    </g>
+                </g>
+                <g transform="matrix(2.15379,-0.0577564,-0.03279,0.816399,-1568.7,-1061.96)">
+                    <g transform="matrix(1.0458,0.0739853,0.0158835,1.0433,798.312,1437.86)">
+                        <path d="M7.008,16.048L5.235,5.699L15.667,6.894L7.008,16.048Z" style="fill:rgb(255,0,0);"/>
+                        <path d="M16.663,16.508L10.117,10.317" style="fill:none;stroke:rgb(255,0,0);stroke-width:4px;"/>
                     </g>
                 </g>
             </g>

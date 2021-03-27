@@ -75,7 +75,7 @@ function parseMapToFenStr(squaresMap) {
         }
 
     })
-    const fen = fenSquarePositions
+    const fen = `${fenSquarePositions} w KQkq - 0 1`;
     return fen;
 }
 

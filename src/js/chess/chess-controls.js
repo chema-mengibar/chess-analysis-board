@@ -95,9 +95,17 @@ export default class ChessControl {
             self.callBacks.onDomainsToggle();
         }, false);
 
+
+
         const buttonSquareDomains = document.getElementById("button-paint-domains-square");
         buttonSquareDomains.addEventListener('click', function() {
             self.callBacks.onDomainsSquare(self.buffer.squareTarget);
+            self.clearSelectedSquareFromBuffer();
+        }, false);
+
+        const buttonSquareDomainSupport = document.getElementById("button-paint-support-square-domain");
+        buttonSquareDomainSupport.addEventListener('click', function() {
+            self.callBacks.onShowSquareDomainSupport(self.buffer.squareTarget);
             self.clearSelectedSquareFromBuffer();
         }, false);
 
@@ -107,11 +115,25 @@ export default class ChessControl {
             self.clearSelectedSquareFromBuffer();
         }, false);
 
-        const buttonSquareAttacks = document.getElementById("button-paint-attack-square");
-        buttonSquareAttacks.addEventListener('click', function() {
-            self.callBacks.onAttacksSquare(self.buffer.squareTarget);
+        const buttonSquareDomainDanger = document.getElementById("button-paint-domain-danger-square");
+        buttonSquareDomainDanger.addEventListener('click', function() {
+            self.callBacks.onDomainDangerSquare(self.buffer.squareTarget);
             self.clearSelectedSquareFromBuffer();
         }, false);
+
+
+        const buttonSquareAttack = document.getElementById("button-paint-attack-square");
+        buttonSquareAttack.addEventListener('click', function() {
+            self.callBacks.onShowAttackSquare(self.buffer.squareTarget);
+            self.clearSelectedSquareFromBuffer();
+        }, false);
+
+        const buttonSquareDanger = document.getElementById("button-paint-danger-square");
+        buttonSquareDanger.addEventListener('click', function() {
+            self.callBacks.onDangerSquare(self.buffer.squareTarget);
+            self.clearSelectedSquareFromBuffer();
+        }, false);
+
 
         const buttonFlipBoard = document.getElementById("button-board-flip");
         buttonFlipBoard.addEventListener('click', function() {
@@ -124,11 +146,7 @@ export default class ChessControl {
             self.clearSelectedSquareFromBuffer();
         }, false);
 
-        const buttonSquareDomainSupport = document.getElementById("button-paint-support-square-domain");
-        buttonSquareDomainSupport.addEventListener('click', function() {
-            self.callBacks.onShowSquareDomainSupport(self.buffer.squareTarget);
-            self.clearSelectedSquareFromBuffer();
-        }, false);
+
 
         const buttonVisualsRemove = document.getElementById("button-visuals-remove");
         buttonVisualsRemove.addEventListener('click', function() {
@@ -140,9 +158,19 @@ export default class ChessControl {
             self.callBacks.onToggleMarkers();
         }, false);
 
-        const buttonFenLoad = document.getElementById("button-fen-load");
-        buttonFenLoad.addEventListener('click', function() {
+        const buttonFenCreateBoard = document.getElementById("button-fen-create-board");
+        buttonFenCreateBoard.addEventListener('click', function() {
             self.callBacks.onLoadFenFromInput();
+        }, false);
+
+        const buttonFenCreateFen = document.getElementById("button-fen-create-fen");
+        buttonFenCreateFen.addEventListener('click', function() {
+            self.callBacks.onLoadFenToInput();
+        }, false);
+
+        const buttonFenCreateLink = document.getElementById("button-fen-create-link");
+        buttonFenCreateLink.addEventListener('click', function() {
+            self.callBacks.onCreateLink();
         }, false);
     }
 
