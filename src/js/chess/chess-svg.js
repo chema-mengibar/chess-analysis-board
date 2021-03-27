@@ -188,7 +188,42 @@ function createCoordinates(flipedRows, flipedCols) {
     return elements;
 }
 
+function  getMarkerCircleIdByColor(color) {
+    return color ? 'marker-circle-white' : 'marker-circle-black';
+}
+
+function getDomainClassNameByColor(color) {
+    return color ? 'with-domain-white' : 'with-domain-black';
+}
+
+function drawMarkerInSquare(squareName, markerId) {
+    switch (markerId) {
+        case 'marker-circle-white':
+            addMarkerCircle(squareName, true);
+            break;
+        case 'marker-circle-neutral':
+            addMarkerCircle(squareName);
+            break;
+        case 'marker-circle-black':
+            addMarkerCircle(squareName, false);
+            break;
+        case 'marker-move-last':
+            addMarkerMoveLast(squareName);
+            break;
+        case 'marker-rect-ok':
+            addMarkerRect(squareName, true);
+            break;
+        case 'marker-rect-error':
+            addMarkerRect(squareName, false);
+            break;
+        default:
+            break;
+    }
+}
+
 export default {
+    getDomainClassNameByColor,
+    getMarkerCircleIdByColor,
     addMarkerCircle,
     addMarkerRect,
     addMarkerMoveLast,
@@ -198,7 +233,8 @@ export default {
     createCoordinates,
     removeSquareMarkers,
     drawArrowInSquares,
-    toggleShowMarkersContainer
+    toggleShowMarkersContainer,
+    drawMarkerInSquare
 }
 
 /*

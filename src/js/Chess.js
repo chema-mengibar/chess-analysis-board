@@ -37,7 +37,7 @@ export default class Chess {
     }
 
     lab() {
-        // this.drawMarkerInSquare('e4', 'id');
+        // Svg.drawMarkerInSquare('e4', 'id');
              // this.addMarkerToSquare('e4', 'marker-circle-white');
         // this.actionsBridge.onDomainB()
     }
@@ -84,16 +84,22 @@ export default class Chess {
 
         const originPiece = this.squaresMap.get(originSquare);
         if (originPiece) {
-            this.drawRemoveLastStepMoveMarker();
             this.setFigureInSquare(targetSquare, originPiece.letter, originPiece.color);
             this.setFigureInSquare(originSquare, null);
             this.drawPiecesFromMap();
             this.movesRegistry.saveMove(originSquare, targetSquare, this.squaresMap);
+            this.drawRemoveLastStepMoveMarker();
             this.addMarkerToSquare( originSquare, 'marker-move-last' );
             this.addMarkerToSquare( targetSquare, 'marker-move-last' );
-
             const currentFen = Utils.parseMapToFenStr(this.squaresMap);
             Utils.changeHistoryWithFen(currentFen);
+            // RePaint domains on move
+            if(this.state.isDomainWhiteOn)  {
+                this.drawDomainByColor(white);
+            }
+            if(this.state.isDomainBlackOn){
+                this.drawDomainByColor(black);
+            }
             return true;
         }
     }
@@ -112,12 +118,20 @@ export default class Chess {
     // ----------------------------------------------- Moves control
 
      drawFromMove(move){
+        // analog to this.move()
         this.fenToMap(move.fen);
         this.drawPiecesFromMap();
         this.drawRemoveLastStepMoveMarker();
         this.addMarkerToSquare( move.from, 'marker-move-last' );
         this.addMarkerToSquare( move.to, 'marker-move-last' );
         Utils.changeHistoryWithFen(move.fen);
+        // RePaint domains on move
+        if(this.state.isDomainWhiteOn)  {
+            this.drawDomainByColor(white);
+        }
+        if(this.state.isDomainBlackOn){
+            this.drawDomainByColor(black);
+        }
     }
 
     // ----------------------------------------------- Maps
@@ -136,11 +150,10 @@ export default class Chess {
         if (selectedMarkerIdInSquare === -1) {
             squareMarkers.push(markerId);
             this.markersMap.set(squareName, squareMarkers);
-            this.drawMarkerInSquare(squareName, markerId);
+            Svg.drawMarkerInSquare(squareName, markerId);
         }
         if (forceRemove && selectedMarkerIdInSquare > -1) {
             squareMarkers.splice(selectedMarkerIdInSquare, 1);
-            console.log(squareMarkers)
             this.markersMap.set(squareName, squareMarkers);
             this.drawMarkersFromMapBySquareName(squareName);
         }
@@ -199,7 +212,7 @@ export default class Chess {
         this.markersMap.forEach((markerEntry, squareKey) => {
             Svg.removeSquareMarkers(squareKey);
             markerEntry.forEach(markerItemId => {
-                this.drawMarkerInSquare(squareKey, markerItemId);
+                Svg.drawMarkerInSquare(squareKey, markerItemId);
             })
         })
     }
@@ -210,37 +223,8 @@ export default class Chess {
         // Redraw markers from map
         const squareMarkers = this.markersMap.get(squareName);
         squareMarkers.forEach(markerItemId => {
-            this.drawMarkerInSquare(squareName, markerItemId);
+            Svg.drawMarkerInSquare(squareName, markerItemId);
         })
-    }
-
-    drawMarkerInSquare(squareName, markerId) {
-        switch (markerId) {
-            case 'marker-circle-white':
-                Svg.addMarkerCircle(squareName, true);
-                break;
-            case 'marker-circle-neutral':
-                Svg.addMarkerCircle(squareName);
-                break;
-            case 'marker-circle-black':
-                Svg.addMarkerCircle(squareName, false);
-                break;
-            case 'marker-move-last':
-                Svg.addMarkerMoveLast(squareName);
-                break;
-            case 'marker-rect-ok':
-                Svg.addMarkerRect(squareName, true);
-                break;
-            case 'marker-rect-error':
-                Svg.addMarkerRect(squareName, false);
-                break;
-            default:
-                break;
-        }
-    }
-
-    getMarkerCircleIdByColor(color) {
-        return color ? 'marker-circle-white' : 'marker-circle-black';
     }
 
     drawRemoveAllMarkers() {
@@ -287,17 +271,14 @@ export default class Chess {
         return options;
     }
 
-    getDomainClassNameByColor(color) {
-        return color ? 'with-domain-white' : 'with-domain-black';
-    }
-
     drawDomainByColor(color = white) {
+        this.drawClearDomains(color);
         if (color) {
             this.state.isDomainWhiteOn = true;
         } else {
             this.state.isDomainBlackOn = true;
         }
-        const domainClassName = this.getDomainClassNameByColor(color);
+        const domainClassName = Svg.getDomainClassNameByColor(color);
         const squaresInDomain = []
         this.squaresMap.forEach((squareEntry, squareName) => {
             if (squareEntry && squareEntry.color === color) {
@@ -306,6 +287,7 @@ export default class Chess {
             }
         })
         squaresInDomain.forEach(squareName => {
+            // todo: domain from map
             document.getElementById(`base-${squareName}`).classList.add(domainClassName);
         })
     }
@@ -313,11 +295,12 @@ export default class Chess {
     drawDomainBySquare(squareName) {
         const squarePiece = this.squaresMap.get(squareName);
         if (squarePiece) {
-            const markerIdBySquareColor = this.getMarkerCircleIdByColor(squarePiece.color);
+            const markerIdBySquareColor = Svg.getMarkerCircleIdByColor(squarePiece.color);
             this.addMarkerToSquare(squareName, markerIdBySquareColor);
             const squaresFromFigure = this.getSquarePieceAllowedSquares(squareName);
             squaresFromFigure.forEach(domainSquareName => {
-                const classNameDomain = this.getDomainClassNameByColor(squarePiece.color);
+                const classNameDomain = Svg.getDomainClassNameByColor(squarePiece.color);
+                // todo: domain from map
                 document.getElementById(`base-${domainSquareName}`).classList.add(classNameDomain);
             })
         }
@@ -329,8 +312,9 @@ export default class Chess {
         } else {
             this.state.isDomainBlackOn = false;
         }
-        const classNameColor = this.getDomainClassNameByColor(color);
+        const classNameColor = Svg.getDomainClassNameByColor(color);
         this.squaresMap.forEach((_, squareName) => {
+            // todo: domain from map
             const classList = document.getElementById(`base-${squareName}`).classList;
             classList.remove(classNameColor);
         });
@@ -343,7 +327,7 @@ export default class Chess {
         const squarePiece = this.squaresMap.get(squareName);
         if (squarePiece) {
             const squareOptions = this.getSquarePieceAllowedSquares(squareName);
-            const markerIdByColor = this.getMarkerCircleIdByColor(squarePiece.color);
+            const markerIdByColor = Svg.getMarkerCircleIdByColor(squarePiece.color);
             squareOptions.forEach(optionSquareKey => {
                 const pieceInOptionSquare = this.squaresMap.get(optionSquareKey);
                 if (pieceInOptionSquare && pieceInOptionSquare.color !== squarePiece.color) {
@@ -360,7 +344,7 @@ export default class Chess {
         }
         const squarePiece = this.squaresMap.get(squareName);
         if (squarePiece) {
-            const markerIdByColor = this.getMarkerCircleIdByColor(squarePiece.color);
+            const markerIdByColor = Svg.getMarkerCircleIdByColor(squarePiece.color);
             const squareOptions = this.getSquarePieceAllowedSquares(squareName);
             this.drawDomainBySquare(squareName);
             squareOptions.forEach(domainSquareName => {
@@ -392,7 +376,7 @@ export default class Chess {
                     // console.debug('[CHESS] drawAttacksToSquare: mapOptions', squareMapSquareOptions);
                     if (squareMapSquareOptions.includes(squareName)) {
                         isSquareSave = false;
-                        const markerIdByColor = this.getMarkerCircleIdByColor(squareMapValue.color);
+                        const markerIdByColor = Svg.getMarkerCircleIdByColor(squareMapValue.color);
                         this.addMarkerToSquare(squareMapKey, markerIdByColor)
                         this.drawDomainBySquare(squareMapKey);
                     }
@@ -401,12 +385,11 @@ export default class Chess {
             if (isSquareSave) {
                 this.addMarkerToSquare(squareName, 'marker-rect-ok');
             } else {
-                const markerIdBySquareColor = this.getMarkerCircleIdByColor(squarePiece.color);
+                const markerIdBySquareColor = Svg.getMarkerCircleIdByColor(squarePiece.color);
                 this.addMarkerToSquare(squareName, markerIdBySquareColor);
             }
         }
     }
-
 
     drawDangerToSquareDomain(squareName) {
         if (!squareName) {
@@ -426,7 +409,7 @@ export default class Chess {
 
                         const uniques = squaresOptionsFromFigure.filter(value => squareMapSquareOptions.includes(value));
                         uniques.forEach((commonSquare) => {
-                            const markerIdByColor = this.getMarkerCircleIdByColor(squareMapValue.color);
+                            const markerIdByColor = Svg.getMarkerCircleIdByColor(squareMapValue.color);
                             this.addMarkerToSquare(squareMapKey, markerIdByColor);
                             this.addMarkerToSquare(commonSquare, markerIdByColor);
 
@@ -459,7 +442,7 @@ export default class Chess {
                     console.debug('[CHESS] drawSupportToSquare: mapOptions', squareMapSquareOptions);
                     if (squareMapSquareOptions.includes(squareName)) {
                         isSquareSupported = true;
-                        const markerIdByColor = this.getMarkerCircleIdByColor(squareMapValue.color);
+                        const markerIdByColor = Svg.getMarkerCircleIdByColor(squareMapValue.color);
                         this.addMarkerToSquare(squareMapKey, markerIdByColor)
                         this.drawDomainBySquare(squareMapKey);
                     }
@@ -492,7 +475,7 @@ export default class Chess {
                         // console.debug('[CHESS] drawSupportToSquareDomain: ´fgure', squaresOptionsFromFigure);
                         const uniques = squaresOptionsFromFigure.filter(value => squareMapSquareOptions.includes(value));
                         uniques.forEach((commonSquare) => {
-                            const markerIdByColor = this.getMarkerCircleIdByColor(squareMapValue.color);
+                            const markerIdByColor = Svg.getMarkerCircleIdByColor(squareMapValue.color);
                             this.addMarkerToSquare(squareMapKey, markerIdByColor);
                             this.addMarkerToSquare(commonSquare, markerIdByColor);
 
@@ -614,14 +597,14 @@ export default class Chess {
                 if(!move){
                     return;
                 }
-                this.drawFromMove(move)
+                this.drawFromMove(move);
             },
             onNavNext:()=>{
                 const move = this.movesRegistry.nextMove;
                 if(!move){
                     return;
                 }
-                this.drawFromMove(move)
+                this.drawFromMove(move);
             },
 
         }
