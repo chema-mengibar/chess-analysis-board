@@ -27,14 +27,18 @@
 }
 
 .base {
-    &.with-domain-black:not(.with-domain-white):not(.with-selection) {
+    &.with-domain-black:not(.with-domain-white):not(.with-selection):not(.with-flank){
         fill: var(--color-board-base-domain-black);
     }
-    &.with-domain-white:not(.with-domain-black):not(.with-selection) {
+    &.with-domain-white:not(.with-domain-black):not(.with-selection):not(.with-flank){
         fill: var(--color-board-base-domain-white);
     }
-    &.with-domain-white.with-domain-black:not(.with-selection) {
+    &.with-domain-white.with-domain-black:not(.with-selection):not(.with-flank){
         fill: var(--color-board-base-domain-both);
+    }
+
+    &.with-flank {
+        stroke: var(--color-board-base-flank);
     }
     &.with-selection {
         fill: var(--color-board-base-selection);

@@ -7,6 +7,7 @@ export const fenBase = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
 export const flankQ = ['a', 'b', 'c', 'd', ];
 export const flankK = ['e', 'f', 'g', 'h', ];
+export const flankC = ['c','d', 'e','f' ];
 
 export const white = true;
 export const black = false;

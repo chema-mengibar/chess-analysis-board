@@ -1,4 +1,4 @@
-import { rows, cols, fenBase, white, black, figures } from './chess/chess-const.js';
+import { rows, cols, fenBase, white, black, figures, flankC } from './chess/chess-const.js';
 import MovesRegistry from './MovesRegistry.js';
 import Utils from './chess/chess-utils.js';
 import Squares from './chess/chess-squares.js';
@@ -37,18 +37,16 @@ export default class Chess {
     }
 
     lab() {
+        //this.drawFlankCenterDomains();
         // Svg.drawMarkerInSquare('e4', 'id');
-             // this.addMarkerToSquare('e4', 'marker-circle-white');
+        // this.addMarkerToSquare('e4', 'marker-circle-white');
         // this.actionsBridge.onDomainB()
     }
 
     labMoves() {
         // In progress
-        this.move('a2', 'a3');
-        this.move('b2', 'b3');
-        this.move('c2', 'c3');
-        this.move('d2', 'd4');
-        this.move('e2', 'e3');
+        //this.move('a2', 'a3');
+
     }
 
     // ----------------------------------------------- Pieces & Board
@@ -63,7 +61,7 @@ export default class Chess {
     async render() {
         this.drawBoard().then(() => {
             this.chessControls.squareControls();
-            this.labMoves()
+            this.lab()
         });
     }
 
@@ -161,6 +159,17 @@ export default class Chess {
 
     // ----------------------------------------------- Draw: Markers, Pieces
 
+
+    drawFlankCenterDomains(){
+        const targetRows = [6,5,4,3];
+        const classNameDomain = 'with-flank';
+        flankC.forEach( flankCColLetter =>{
+            targetRows.forEach(row=>{
+               const squareName = Utils.getCellKey(flankCColLetter, row);
+                document.getElementById(`base-${squareName}`).classList.add(classNameDomain);
+            })
+        })
+    }
     drawRemoveLastStepMoveMarker(){
         this.markersMap.forEach( markerItemList =>{
             const markerIdx = markerItemList.indexOf('marker-move-last');
@@ -290,6 +299,7 @@ export default class Chess {
             // todo: domain from map
             document.getElementById(`base-${squareName}`).classList.add(domainClassName);
         })
+        return squaresInDomain;
     }
 
     drawDomainBySquare(squareName) {
@@ -525,15 +535,17 @@ export default class Chess {
             onClear: () => {
                 this.squaresMap = Utils.createSquaresMap(rows, cols);
                 this.drawPiecesFromMap();
+                const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+                Utils.changeHistoryWithFen(currentFen);
             },
             onInit: () => {
                 this.fenToMap(fenBase);
                 this.drawPiecesFromMap();
+                Utils.changeHistoryWithFen(fenBase);
             },
             onDomainW: async() => {
                 if (!this.state.isDomainWhiteOn) {
                     this.drawDomainByColor(white);
-
                 } else {
                     this.drawClearDomains(white);
                 }
@@ -541,7 +553,6 @@ export default class Chess {
             onDomainB: async() => {
                 if (!this.state.isDomainBlackOn) {
                     this.drawDomainByColor(black);
-
                 } else {
                     this.drawClearDomains(black);
                 }
@@ -554,7 +565,6 @@ export default class Chess {
                     this.drawDomainByColor(white);
                     this.drawDomainByColor(black);
                 }
-
             },
             onDomainsSquare: async(squareName) => {
                 this.drawDomainBySquare(squareName);
