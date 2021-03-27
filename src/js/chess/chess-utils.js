@@ -1,5 +1,24 @@
 import { cols, white, } from './chess-const.js'
 
+function parseConfig(config){
+    return  {
+        flip: ('flip' in config) ? config.flip : false,
+        asIcon: ('asIcon' in config) ? config.asIcon : true,
+        asLines: ('asLines' in config) ? config.asLines : true,
+        withLimitation: ('withLimitation' in config) ? config.withLimitation : false,
+    }
+}
+
+function changeHistoryWithFen( fen ){
+    const url = getAbsoluteRouteWithFen(fen);
+    history.pushState({
+        id: 'game-move'
+    }, '', url);
+}
+
+function getAbsoluteRouteWithFen(fen){
+     return  `${window.location.origin}${window.location.pathname}?fen=${fen}`;
+}
 
 function getCellKey(colLetter, rowNumber) {
     return `${colLetter}${rowNumber}`;
@@ -114,12 +133,8 @@ function parseFenStrToObject(fen) {
             }
         })
     });
-
     return squaresKeyVal;
 }
-
-
-
 
 
 export default {
@@ -128,5 +143,8 @@ export default {
     createMarkersMap,
     parseFenStrToObject,
     parseMapToFenStr,
-    asSquare
+    asSquare,
+    parseConfig,
+    getAbsoluteRouteWithFen,
+    changeHistoryWithFen
 }

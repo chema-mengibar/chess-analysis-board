@@ -3,18 +3,14 @@ import MovesRegistry from './MovesRegistry.js';
 import Utils from './chess/chess-utils.js';
 import Squares from './chess/chess-squares.js';
 import Svg from './chess/chess-svg.js';
+import Clipboard from './utils/clipboard.js';
 import ChessControls from './chess/chess-controls.js';
 
 export default class Chess {
 
     constructor(config) {
         // Init
-        this.config = {
-            flip: ('flip' in config) ? config.flip : false,
-            asIcon: ('asIcon' in config) ? config.asIcon : true,
-            asLines: ('asLines' in config) ? config.asLines : true,
-            withLimitation: ('withLimitation' in config) ? config.withLimitation : false,
-        }
+        this.config = Utils.parseConfig(config);
 
         this.figures = figures;
         this.colors = {
@@ -38,31 +34,21 @@ export default class Chess {
             isDomainWhiteOn: false,
             isDomainBlackOn: false
         }
-
     }
 
     lab() {
         // this.drawMarkerInSquare('e4', 'id');
-        // this.drawMarkerInSquare('d3', 'id');
-        // this.drawMarkerInSquare('a1', 'id');
-
-        // this.addMarkerToSquare('e4', 'marker-circle-white');
+             // this.addMarkerToSquare('e4', 'marker-circle-white');
         // this.actionsBridge.onDomainB()
-
     }
 
     labMoves() {
         // In progress
-        this.move('e2', 'e4');
-        this.move('d5', 'e4');
-        this.move('d2', 'e4');
-        this.move('f6', 'f5');
-        console.log(this.movesRegistry.moves);
-        console.log(this.movesRegistry.currentMoveIdx);
-
-        setTimeout(() => {
-            this.jumpToMove(1);
-        }, 1000)
+        this.move('a2', 'a3');
+        this.move('b2', 'b3');
+        this.move('c2', 'c3');
+        this.move('d2', 'd4');
+        this.move('e2', 'e3');
     }
 
     // ----------------------------------------------- Pieces & Board
@@ -74,12 +60,10 @@ export default class Chess {
         this.squaresMap = new Map(Object.entries(fenAsObj));
     }
 
-
     async render() {
         this.drawBoard().then(() => {
             this.chessControls.squareControls();
-
-            this.lab()
+            this.labMoves()
         });
     }
 
@@ -97,13 +81,19 @@ export default class Chess {
     }
 
     async move(originSquare, targetSquare) {
-        console.log('[CHESS] move');
+
         const originPiece = this.squaresMap.get(originSquare);
         if (originPiece) {
+            this.drawRemoveLastStepMoveMarker();
             this.setFigureInSquare(targetSquare, originPiece.letter, originPiece.color);
             this.setFigureInSquare(originSquare, null);
             this.drawPiecesFromMap();
             this.movesRegistry.saveMove(originSquare, targetSquare, this.squaresMap);
+            this.addMarkerToSquare( originSquare, 'marker-move-last' );
+            this.addMarkerToSquare( targetSquare, 'marker-move-last' );
+
+            const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+            Utils.changeHistoryWithFen(currentFen);
             return true;
         }
     }
@@ -121,12 +111,13 @@ export default class Chess {
 
     // ----------------------------------------------- Moves control
 
-    jumpToMove(moveIdx) {
-        const move = this.movesRegistry.moves[moveIdx];
+     drawFromMove(move){
         this.fenToMap(move.fen);
         this.drawPiecesFromMap();
-        this.drawMarkerInSquare(move.from, 'marker-move-last');
-        this.drawMarkerInSquare(move.to, 'marker-move-last');
+        this.drawRemoveLastStepMoveMarker();
+        this.addMarkerToSquare( move.from, 'marker-move-last' );
+        this.addMarkerToSquare( move.to, 'marker-move-last' );
+        Utils.changeHistoryWithFen(move.fen);
     }
 
     // ----------------------------------------------- Maps
@@ -156,6 +147,17 @@ export default class Chess {
     }
 
     // ----------------------------------------------- Draw: Markers, Pieces
+
+    drawRemoveLastStepMoveMarker(){
+        this.markersMap.forEach( markerItemList =>{
+            const markerIdx = markerItemList.indexOf('marker-move-last');
+            if (markerIdx > -1) {
+                markerItemList.splice(markerIdx, 1);
+            }
+        })
+        this.drawMarkersFromMap();
+    }
+
     async drawBoard() {
         const svg = document.getElementById("svg-squares");
         const svgCoordinates = document.getElementById("svg-coordinates");
@@ -169,10 +171,7 @@ export default class Chess {
                 svg.appendChild(squareEl);
             })
         })
-
-
         this.drawPiecesFromMap();
-
         const coordinatesItems = Svg.createCoordinates(flipedRows, flipedCols);
         coordinatesItems.forEach(coorItem => {
             svgCoordinates.appendChild(coorItem);
@@ -199,7 +198,6 @@ export default class Chess {
     drawMarkersFromMap() {
         this.markersMap.forEach((markerEntry, squareKey) => {
             Svg.removeSquareMarkers(squareKey);
-
             markerEntry.forEach(markerItemId => {
                 this.drawMarkerInSquare(squareKey, markerItemId);
             })
@@ -214,7 +212,6 @@ export default class Chess {
         squareMarkers.forEach(markerItemId => {
             this.drawMarkerInSquare(squareName, markerItemId);
         })
-
     }
 
     drawMarkerInSquare(squareName, markerId) {
@@ -251,24 +248,17 @@ export default class Chess {
         this.drawMarkersFromMap()
     }
 
-
-
     // ----------------------------------------------- Engine
     getSquarePieceAllowedSquares(squareName, forcedPieceAndColor = null) {
-
         const limitation = this.config.withLimitation;
-
         const options = [];
         if (!squareName) {
             return;
         }
         const squareNameParts = squareName.split('');
-
         const squareColumnLetter = squareNameParts[0];
         const squareRowNumber = parseInt(squareNameParts[1], 10);
-
         const { letter, color } = forcedPieceAndColor ? forcedPieceAndColor : this.squaresMap.get(squareName);
-
         if (letter === 'r') {
             const squareOptions = Squares.getSquaresOptionsFromSquareWithR(this.squaresMap, squareColumnLetter, squareRowNumber, limitation);
             options.push(...squareOptions);
@@ -347,7 +337,6 @@ export default class Chess {
     }
 
     drawAttackFromSquare(squareName) {
-        // todo
         if (!squareName) {
             return;
         }
@@ -386,9 +375,7 @@ export default class Chess {
                         this.addMarkerToSquare(nextDomainSquareName, markerIdByColor);
                     }
                 });
-
             });
-
         }
     }
 
@@ -430,9 +417,7 @@ export default class Chess {
         if (squarePiece) {
             const squaresOptionsFromFigure = this.getSquarePieceAllowedSquares(squareName);
             squaresOptionsFromFigure.forEach(domainSquareName => {
-
-                this.drawDomainBySquare(squareName);
-
+               this.drawDomainBySquare(squareName);
                 this.squaresMap.forEach((squareMapValue, squareMapKey) => {
                     if (squareMapKey !== squareName && squareMapValue && squareMapValue.color !== squarePiece.color) {
                         const squareMapSquareOptions = this.getSquarePieceAllowedSquares(squareMapKey);
@@ -462,7 +447,6 @@ export default class Chess {
     }
 
     drawSupportToSquare(squareName) {
-        console.log('[CHESS] drawSupportToSquare:', squareName);
         if (!squareName) {
             return;
         }
@@ -506,7 +490,6 @@ export default class Chess {
                         const squareMapSquareOptions = this.getSquarePieceAllowedSquares(squareMapKey);
                         // console.debug('[CHESS] drawSupportToSquareDomain: mapOptions', squareMapSquareOptions);
                         // console.debug('[CHESS] drawSupportToSquareDomain: ´fgure', squaresOptionsFromFigure);
-
                         const uniques = squaresOptionsFromFigure.filter(value => squareMapSquareOptions.includes(value));
                         uniques.forEach((commonSquare) => {
                             const markerIdByColor = this.getMarkerCircleIdByColor(squareMapValue.color);
@@ -530,7 +513,6 @@ export default class Chess {
 
     // ----------------------------------------------- Control Actions Bridge
     get actionsBridge() {
-
         return {
             onShowSquareSupport: (squareTarget) => {
                 this.drawSupportToSquare(squareTarget);
@@ -623,23 +605,25 @@ export default class Chess {
             },
             onCreateLink: () => {
                 const currentFen = Utils.parseMapToFenStr(this.squaresMap);
-                const linkHref = `${window.location.origin}?fen=${currentFen}`;
-                try {
+                const linkHref = Utils.getAbsoluteRouteWithFen(currentFen);
+                Clipboard.addTextToClipboard(linkHref);
 
-                    let myTemporaryInputElement = document.createElement('input');
-                    myTemporaryInputElement.type = 'text';
-                    myTemporaryInputElement.value = linkHref;
-
-                    document.body.appendChild(myTemporaryInputElement);
-
-                    myTemporaryInputElement.select();
-                    document.execCommand('Copy');
-
-                    document.body.removeChild(myTemporaryInputElement);
-                } catch (e) {
-                    console.error('[CHESS] copy:', e);
+            },
+            onNavPrev:()=>{
+                const move = this.movesRegistry.prevMove;
+                if(!move){
+                    return;
                 }
-            }
+                this.drawFromMove(move)
+            },
+            onNavNext:()=>{
+                const move = this.movesRegistry.nextMove;
+                if(!move){
+                    return;
+                }
+                this.drawFromMove(move)
+            },
+
         }
     }
 

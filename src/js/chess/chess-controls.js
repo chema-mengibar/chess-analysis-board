@@ -172,6 +172,17 @@ export default class ChessControl {
         buttonFenCreateLink.addEventListener('click', function() {
             self.callBacks.onCreateLink();
         }, false);
+
+        const buttonNavPrev = document.getElementById("button-nav-prev");
+        buttonNavPrev.addEventListener('click', function() {
+            self.callBacks.onNavPrev();
+        }, false);
+
+        const buttonNavNext = document.getElementById("button-nav-next");
+        buttonNavNext.addEventListener('click', function() {
+            self.callBacks.onNavNext();
+        }, false);
+
     }
 
     async setBufferSquareTarget(squareName) {

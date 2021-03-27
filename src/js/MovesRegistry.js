@@ -5,6 +5,7 @@ export default class MovesRegistry {
     constructor() {
         this.moves = [];
         this.moveIdx = 0;
+
     }
 
     saveMove(squareFrom, squareTo, squaresMap) {
@@ -14,12 +15,43 @@ export default class MovesRegistry {
             to: squareTo,
             fen: fen
         }
+
+        const currentCursor = this.moveIdx;
+        this.moves.length= currentCursor + 1;
         this.moves.push(moveEntry);
         this.moveIdx = this.moves.length - 1;
     }
 
     get currentMoveIdx() {
         return this.moveIdx;
+    }
+
+    get currentMove() {
+        return this.moves[this.moveIdx];
+    }
+
+    get prevMove() {
+        let cursor = this.moveIdx - 1;
+        if( cursor <= 1){
+            cursor = 1;
+        }
+       this.moveIdx = cursor;
+       return this.moves[cursor ];
+    }
+    get nextMove() {
+        let cursor = this.moveIdx + 1;
+        if( cursor >= this.moves.length){
+            cursor = this.moves.length-1;
+        }
+        this.moveIdx = cursor;
+        return this.moves[cursor ];
+    }
+
+    getMoveByIdx(moveIdx){
+        if(moveIdx<this.moves.length){
+            return this.moves[this.moveIdx];
+        }
+        return null;
     }
 
 
