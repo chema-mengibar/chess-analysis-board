@@ -188,6 +188,11 @@ export default class ChessControl {
             self.callBacks.onNavRecord();
         }, false);
 
+        const buttonLoadPgn = document.getElementById("button-pgn-import");
+        buttonLoadPgn.addEventListener('click', function() {
+            self.callBacks.onLoadPgn();
+        }, false);
+
     }
 
     async setBufferSquareTarget(squareName) {

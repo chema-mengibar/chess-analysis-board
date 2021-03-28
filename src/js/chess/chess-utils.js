@@ -136,6 +136,79 @@ function parseFenStrToObject(fen) {
     return squaresKeyVal;
 }
 
+function parsePgn(pgnStr){
+    const str = `
+        [Event "IBM Kasparov vs. Deep Blue Rematch"]
+        [Site "New York, NY USA"]
+        [Date "1997.05.11"]
+        [Round "6"]
+        [White "Deep Blue"]
+        [Black "Kasparov, Garry"]
+        [Opening "Caro-Kann: 4...Nd7"]
+        [ECO "B17"]
+        [Result "1-0"]
+         
+        1.e4 c6 2.d4 d5 3.Nc3 dxe4 4.Nxe4 Nd7 5.Ng5 Ngf6 6.Bd3 e6 7.N1f3 h6
+        8.Nxe6 Qe7 9.O-O fxe6 10.Bg6+ Kd8 {Kasparov schüttelt kurz den Kopf}
+        11.Bf4 b5 12.a4 Bb7 13.Re1 Nd5 14.Bg3 Kc8 15.axb5 cxb5 16.Qd3 Bc6
+        17.Bf5 exf5 18.Rxe7 Bxe7 19.c4 1-0
+    `;
+
+    const regex = /([0-9]{1,2}.)([\S]+) ([\S]+)/gm;
+    let m;
+
+    const registry = [];
+
+    while ((m = regex.exec(str)) !== null) {
+        // avoid infinite loops
+        if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+        /*
+         group 0: 16.Qd3 Bc6
+         group 1: 16.
+         group 2: Qd3
+         group 3: Bc6
+        */
+        m.forEach((match, groupIndex) => {
+            // console.debug(`[UTILS] parsePgn match: , group ${groupIndex}: ${match}`);
+            if(groupIndex === 0){
+                // Index move
+            }
+            if(groupIndex === 2){
+                // Whites move
+                registry.push(match);
+            }
+            if(groupIndex === 3){
+                // Blacks move
+                registry.push(match);
+            }
+        });
+    }
+
+    console.log( registry )
+}
+
+
+function pgnMoveParser( pgnMove){
+    /*
+    * b4!
+    * Sf5!?
+    * Nxf6
+    * O-O
+    * O-O-O
+    * exd5
+    * Bc5
+    * Qd2#
+    * g8=Q
+    * Rf7+
+    * Qh8+
+    * Rcc8
+    * */
+
+    return ';'
+}
+
 
 export default {
     getCellKey,
@@ -146,5 +219,6 @@ export default {
     asSquare,
     parseConfig,
     getAbsoluteRouteWithFen,
-    changeHistoryWithFen
+    changeHistoryWithFen,
+    parsePgn
 }

@@ -38,6 +38,7 @@ export default class Chess {
     }
 
     lab() {
+        // Utils.parsePgn('');
         //this.drawFlankCenterDomains();
         // Svg.drawMarkerInSquare('e4', 'id');
         // this.addMarkerToSquare('e4', 'marker-circle-white');
@@ -108,6 +109,7 @@ export default class Chess {
         }
     }
 
+
     loadFenFromInput() {
         const fenInputStr = document.getElementById("fen-input").value;
         this.fenToMap(fenInputStr);
@@ -119,6 +121,13 @@ export default class Chess {
         const currentFen = Utils.parseMapToFenStr(this.squaresMap);
         Utils.changeHistoryWithFen(currentFen);
         document.getElementById("fen-input").value = currentFen;
+    }
+
+    loadPgnFromInput() {
+        const pgnInputStr = document.getElementById("pgn-input").value;
+        Utils.parsePgn(pgnInputStr);
+        // Utils.changeHistoryWithFen(fenInputStr);
+        // this.drawPiecesFromMap();
     }
 
     // ----------------------------------------------- Moves control
@@ -633,6 +642,9 @@ export default class Chess {
                 const to = this.state.move ? this.state.move.to : null;
                 this.movesRegistry.saveMove(from, from, this.squaresMap);
             },
+            onLoadPgn:()=>{
+                this.loadPgnFromInput()
+            }
 
         }
     }
