@@ -32,7 +32,8 @@ export default class Chess {
 
         this.state = {
             isDomainWhiteOn: false,
-            isDomainBlackOn: false
+            isDomainBlackOn: false,
+            move: null
         }
     }
 
@@ -85,13 +86,18 @@ export default class Chess {
             this.setFigureInSquare(targetSquare, originPiece.letter, originPiece.color);
             this.setFigureInSquare(originSquare, null);
             this.drawPiecesFromMap();
-            this.movesRegistry.saveMove(originSquare, targetSquare, this.squaresMap);
-            this.drawRemoveLastStepMoveMarker();
-            this.addMarkerToSquare( originSquare, 'marker-move-last' );
-            this.addMarkerToSquare( targetSquare, 'marker-move-last' );
+            // this.movesRegistry.saveMove(originSquare, targetSquare, this.squaresMap);
+            // this.drawRemoveLastStepMoveMarker();
+            // this.addMarkerToSquare( originSquare, 'marker-move-last' );
+            // this.addMarkerToSquare( targetSquare, 'marker-move-last' );
             const currentFen = Utils.parseMapToFenStr(this.squaresMap);
             Utils.changeHistoryWithFen(currentFen);
-            // RePaint domains on move
+
+            this.state.move = {
+                from: originSquare,
+                to: targetSquare,
+            };
+            // COM: RePaint domains on move
             if(this.state.isDomainWhiteOn)  {
                 this.drawDomainByColor(white);
             }
@@ -105,11 +111,13 @@ export default class Chess {
     loadFenFromInput() {
         const fenInputStr = document.getElementById("fen-input").value;
         this.fenToMap(fenInputStr);
+        Utils.changeHistoryWithFen(fenInputStr);
         this.drawPiecesFromMap();
     }
 
     loadFenToInput() {
         const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+        Utils.changeHistoryWithFen(currentFen);
         document.getElementById("fen-input").value = currentFen;
     }
 
@@ -119,11 +127,11 @@ export default class Chess {
         // analog to this.move()
         this.fenToMap(move.fen);
         this.drawPiecesFromMap();
-        this.drawRemoveLastStepMoveMarker();
-        this.addMarkerToSquare( move.from, 'marker-move-last' );
-        this.addMarkerToSquare( move.to, 'marker-move-last' );
+        // this.drawRemoveLastStepMoveMarker();
+        // this.addMarkerToSquare( move.from, 'marker-move-last' );
+        // this.addMarkerToSquare( move.to, 'marker-move-last' );
         Utils.changeHistoryWithFen(move.fen);
-        // RePaint domains on move
+        // COM: RePaint domains on move
         if(this.state.isDomainWhiteOn)  {
             this.drawDomainByColor(white);
         }
@@ -525,11 +533,15 @@ export default class Chess {
             onAdd: (square, letter, color) => {
                 if (!square) { return; }
                 this.setFigureInSquare(square, letter, color);
+                const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+                Utils.changeHistoryWithFen(currentFen);
                 this.drawPiecesFromMap();
             },
             onClearSquare: (square) => {
                 if (!square) { return; }
                 this.setFigureInSquare(square, null);
+                const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+                Utils.changeHistoryWithFen(currentFen);
                 this.drawPiecesFromMap();
             },
             onClear: () => {
@@ -615,6 +627,11 @@ export default class Chess {
                     return;
                 }
                 this.drawFromMove(move);
+            },
+            onNavRecord:()=>{
+                const from = this.state.move ? this.state.move.from : null;
+                const to = this.state.move ? this.state.move.to : null;
+                this.movesRegistry.saveMove(from, from, this.squaresMap);
             },
 
         }

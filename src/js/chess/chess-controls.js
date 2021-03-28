@@ -183,6 +183,11 @@ export default class ChessControl {
             self.callBacks.onNavNext();
         }, false);
 
+        const buttonNavRecord = document.getElementById("button-nav-record");
+        buttonNavRecord.addEventListener('click', function() {
+            self.callBacks.onNavRecord();
+        }, false);
+
     }
 
     async setBufferSquareTarget(squareName) {

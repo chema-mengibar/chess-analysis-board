@@ -31,12 +31,15 @@ export default class MovesRegistry {
     }
 
     get prevMove() {
+        console.log(this.moves)
+        console.log(this.moveIdx)
         let cursor = this.moveIdx - 1;
-        if( cursor <= 1){
-            cursor = 1;
+        console.log(cursor)
+        if( cursor <= 0){
+            cursor = 0;
         }
        this.moveIdx = cursor;
-       return this.moves[cursor ];
+       return this.moves[cursor];
     }
     get nextMove() {
         let cursor = this.moveIdx + 1;
