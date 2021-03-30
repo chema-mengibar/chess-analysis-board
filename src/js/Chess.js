@@ -38,7 +38,21 @@ export default class Chess {
     }
 
     lab() {
-        // Utils.parsePgn('');
+        //Utils.parsePgn('');
+
+
+        const notations = Utils.parsePgn('');
+        const cursorColor = white;
+        const r = [];
+        notations.forEach( notation => {
+            const notationParts = Utils.parsePgnNotation(notation);
+            r.push(notationParts)
+        });
+
+
+
+        console.info(JSON.stringify(r, null, "  "));
+
         //this.drawFlankCenterDomains();
         // Svg.drawMarkerInSquare('e4', 'id');
         // this.addMarkerToSquare('e4', 'marker-circle-white');
@@ -125,7 +139,10 @@ export default class Chess {
 
     loadPgnFromInput() {
         const pgnInputStr = document.getElementById("pgn-input").value;
-        Utils.parsePgn(pgnInputStr);
+
+
+
+        //const options = this.getSquarePieceAllowedSquares(squareName );
         // Utils.changeHistoryWithFen(fenInputStr);
         // this.drawPiecesFromMap();
     }

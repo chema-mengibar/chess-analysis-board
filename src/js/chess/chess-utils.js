@@ -1,4 +1,4 @@
-import { cols, white, } from './chess-const.js'
+import { cols, white, black } from './chess-const.js'
 
 function parseConfig(config){
     return  {
@@ -154,9 +154,8 @@ function parsePgn(pgnStr){
         17.Bf5 exf5 18.Rxe7 Bxe7 19.c4 1-0
     `;
 
-    const regex = /([0-9]{1,2}.)([\S]+) ([\S]+)/gm;
     let m;
-
+    const regex = /([0-9]{1,2}.)([\S]+) ([\S]+)/gm;
     const registry = [];
 
     while ((m = regex.exec(str)) !== null) {
@@ -186,11 +185,11 @@ function parsePgn(pgnStr){
         });
     }
 
-    console.log( registry )
+   return  registry;
 }
 
 
-function pgnMoveParser( pgnMove){
+function parsePgnNotation( pgnMove ){
     /*
     * b4!
     * Sf5!?
@@ -204,9 +203,82 @@ function pgnMoveParser( pgnMove){
     * Rf7+
     * Qh8+
     * Rcc8
+    * end games: 1-0, ...
+    * mate #
     * */
 
-    return ';'
+    const pgnMoveClean1 = pgnMove.replace('#','')
+        .replace('+','')
+        .replace('?','')
+        .replace('!','');
+
+    // endGame case
+    if(['1-0', '1:0', '0-1', '0:1', '1/2-1/2', '*'].includes(pgnMoveClean1)){
+        return [];
+    }
+
+    // Short halfMove case
+    if(pgnMoveClean1 === 'O-O'){
+        return [
+            {figure:'k',  squareTo:'e4'},
+            {figure:'r', squareTo:'e4'},
+        ];
+    }
+
+    // Long halfMove case
+    if(pgnMoveClean1 === 'O-O-O'){
+        return [
+            {figure:'k', squareTo:'e4'},
+            {figure:'r', squareTo:'e4'},
+        ];
+    }
+
+    // Pawn promotion case: g8=Q
+    if(pgnMoveClean1.indexOf('=' )> -1){
+        const partsChange = pgnMoveClean1.split('=');
+        return [
+            {
+                figure:partsChange[1].toLowerCase(),
+                squareTo:partsChange[0]
+            },
+        ];
+    }
+
+    const regExpSquare = /([a-z]{1}[0-9]{1})/g;
+    const matchSquare = regExpSquare.exec(pgnMoveClean1);
+    const pgnSquareName = matchSquare[1];
+    const pgnMoveClean2 = pgnMoveClean1.replace(pgnSquareName, '');
+    const pgnMoveCleanNoX = pgnMoveClean2.replace('x','');
+
+    // Pawn case
+    if(pgnMoveCleanNoX === pgnMoveCleanNoX.toLowerCase()){
+        return [
+            {
+                figure:'p',
+                squareFrom:pgnMoveCleanNoX,
+                squareTo:pgnSquareName
+            },
+        ];
+    }
+
+    let squareFrom = '';
+    let figure = '';
+    if( pgnMoveCleanNoX.length === 2){
+        squareFrom = pgnMoveCleanNoX[1];
+        figure =  pgnMoveCleanNoX[0].toLowerCase();
+    }
+    else{
+        figure =  pgnMoveCleanNoX.toLowerCase();
+    }
+    return [
+        {
+            figure:figure,
+            squareFrom:squareFrom,
+            squareTo:pgnSquareName,
+
+        },
+    ];
+
 }
 
 
@@ -220,5 +292,6 @@ export default {
     parseConfig,
     getAbsoluteRouteWithFen,
     changeHistoryWithFen,
-    parsePgn
+    parsePgn,
+    parsePgnNotation
 }
