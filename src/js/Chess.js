@@ -38,20 +38,46 @@ export default class Chess {
     }
 
     lab() {
-        //Utils.parsePgn('');
-
-
         const notations = Utils.parsePgn('');
-        const cursorColor = white;
+        console.log('lab', notations)
+        let cursorColor = white;
         const r = [];
         notations.forEach( notation => {
-            const notationParts = Utils.parsePgnNotation(notation);
+            const notationParts = Utils.parsePgnNotation(notation, cursorColor);
+            cursorColor = !cursorColor;
             r.push(notationParts)
         });
 
+        r.forEach( rItems => {
+            rItems.forEach( rItem => {
+                const {figure, squareFrom, squareTo, color } = rItem;
+                let flag = false;
+                console.log( '###', figure, squareFrom, squareTo, color )
+                this.squaresMap.forEach( (squareValue, squareKey ) =>{
+                    if( !flag && squareFrom === squareKey ){
+                        this.setFigureInSquare(squareTo, figure, color);
+                        this.setFigureInSquare(squareFrom, null);
+                        flag = true;
+                    }
+                    else if(!flag && squareValue && squareValue.color === color &&  squareValue.letter === figure ){
+                        console.log('>>', squareValue)
+                       const options = this.getSquarePieceAllowedSquares(squareKey );
+                        console.log( options )
+                       if( options.includes(squareTo)){
+                           this.setFigureInSquare(squareKey, null);
+                           this.setFigureInSquare(squareTo, figure, color);
+                           flag = true;
+                       }
+                    }
+                })
 
+            })
+        })
 
-        console.info(JSON.stringify(r, null, "  "));
+        this.drawPiecesFromMap();
+
+        // Utils.changeHistoryWithFen(fenInputStr);
+        // this.drawPiecesFromMap();
 
         //this.drawFlankCenterDomains();
         // Svg.drawMarkerInSquare('e4', 'id');
@@ -139,8 +165,6 @@ export default class Chess {
 
     loadPgnFromInput() {
         const pgnInputStr = document.getElementById("pgn-input").value;
-
-
 
         //const options = this.getSquarePieceAllowedSquares(squareName );
         // Utils.changeHistoryWithFen(fenInputStr);
@@ -276,7 +300,7 @@ export default class Chess {
     }
 
     // ----------------------------------------------- Engine
-    getSquarePieceAllowedSquares(squareName, forcedPieceAndColor = null) {
+    getSquarePieceAllowedSquares(squareName, forcedPieceAndColor = null, allowPawnMove=false) {
         const limitation = this.config.withLimitation;
         const options = [];
         if (!squareName) {
@@ -295,7 +319,7 @@ export default class Chess {
             options.push(...squareOptions);
         }
         if (letter === 'p') {
-            const squareOptions = Squares.getSquaresOptionsFromSquareWithP(squareColumnLetter, squareRowNumber, color);
+            const squareOptions = Squares.getSquaresOptionsFromSquareWithP(squareColumnLetter, squareRowNumber, color, allowPawnMove);
             options.push(...squareOptions);
         }
         if (letter === 'b') {

@@ -72,7 +72,8 @@ function getSquaresOptionsFromSquareWithN(
 function getSquaresOptionsFromSquareWithP(
     squareColumLetter,
     squareRowNumber,
-    color
+    color,
+    allowPawnMove
 ) {
     const currentColumnIdx = cols.indexOf(squareColumLetter);
     const squares = [];
@@ -81,6 +82,11 @@ function getSquaresOptionsFromSquareWithP(
         [1, cellY],
         [-1, cellY]
     ];
+    if(allowPawnMove){
+        pCombis.push([0, cellY]);
+        const cellYplus2 = color ? squareRowNumber + 2 : squareRowNumber - 2;
+        pCombis.push([0, cellYplus2]);
+    }
     pCombis.forEach((xy) => {
         const x = currentColumnIdx + xy[0];
         const y = xy[1];

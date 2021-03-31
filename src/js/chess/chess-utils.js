@@ -148,10 +148,7 @@ function parsePgn(pgnStr){
         [ECO "B17"]
         [Result "1-0"]
          
-        1.e4 c6 2.d4 d5 3.Nc3 dxe4 4.Nxe4 Nd7 5.Ng5 Ngf6 6.Bd3 e6 7.N1f3 h6
-        8.Nxe6 Qe7 9.O-O fxe6 10.Bg6+ Kd8 {Kasparov schüttelt kurz den Kopf}
-        11.Bf4 b5 12.a4 Bb7 13.Re1 Nd5 14.Bg3 Kc8 15.axb5 cxb5 16.Qd3 Bc6
-        17.Bf5 exf5 18.Rxe7 Bxe7 19.c4 1-0
+        1.Nf3 e5 2.Ng5 1-0
     `;
 
     let m;
@@ -169,6 +166,7 @@ function parsePgn(pgnStr){
          group 2: Qd3
          group 3: Bc6
         */
+        console.log(m)
         m.forEach((match, groupIndex) => {
             // console.debug(`[UTILS] parsePgn match: , group ${groupIndex}: ${match}`);
             if(groupIndex === 0){
@@ -176,6 +174,7 @@ function parsePgn(pgnStr){
             }
             if(groupIndex === 2){
                 // Whites move
+
                 registry.push(match);
             }
             if(groupIndex === 3){
@@ -189,7 +188,7 @@ function parsePgn(pgnStr){
 }
 
 
-function parsePgnNotation( pgnMove ){
+function parsePgnNotation( pgnMove, color=white ){
     /*
     * b4!
     * Sf5!?
@@ -219,17 +218,30 @@ function parsePgnNotation( pgnMove ){
 
     // Short halfMove case
     if(pgnMoveClean1 === 'O-O'){
+        if(color === white ){
+
+            return [
+                {figure:'k', squareFrom:'e1', squareTo:'g1', color},
+                {figure:'r',squareFrom:'h1', squareTo:'f1', color},
+            ];
+        }
         return [
-            {figure:'k',  squareTo:'e4'},
-            {figure:'r', squareTo:'e4'},
+            {figure:'k', squareFrom:'e8', squareTo:'g8', color},
+            {figure:'r',squareFrom:'h8', squareTo:'f8', color},
         ];
     }
 
     // Long halfMove case
     if(pgnMoveClean1 === 'O-O-O'){
+        if(color === white ){
+            return [
+                {figure:'k',  squareFrom:'e1', squareTo:'c1', color},
+                {figure:'r', squareFrom:'a1',squareTo:'d1', color},
+            ];
+        }
         return [
-            {figure:'k', squareTo:'e4'},
-            {figure:'r', squareTo:'e4'},
+            {figure:'k',  squareFrom:'e8', squareTo:'c8', color},
+            {figure:'r', squareFrom:'a8',squareTo:'d8', color},
         ];
     }
 
@@ -239,7 +251,7 @@ function parsePgnNotation( pgnMove ){
         return [
             {
                 figure:partsChange[1].toLowerCase(),
-                squareTo:partsChange[0]
+                squareTo:partsChange[0], color
             },
         ];
     }
@@ -256,7 +268,7 @@ function parsePgnNotation( pgnMove ){
             {
                 figure:'p',
                 squareFrom:pgnMoveCleanNoX,
-                squareTo:pgnSquareName
+                squareTo:pgnSquareName, color
             },
         ];
     }
@@ -274,7 +286,7 @@ function parsePgnNotation( pgnMove ){
         {
             figure:figure,
             squareFrom:squareFrom,
-            squareTo:pgnSquareName,
+            squareTo:pgnSquareName,color
 
         },
     ];
