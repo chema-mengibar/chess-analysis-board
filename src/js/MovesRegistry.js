@@ -8,6 +8,11 @@ export default class MovesRegistry {
 
     }
 
+    reset() {
+        this.moveIdx = 0;
+        this.moves.length = this.moveIdx;
+    }
+
     saveMove(squareFrom, squareTo, squaresMap) {
         const fen = Utils.parseMapToFenStr(squaresMap);
         const moveEntry = {
@@ -17,7 +22,10 @@ export default class MovesRegistry {
         }
 
         const currentCursor = this.moveIdx;
-        this.moves.length= currentCursor + 1;
+        if (this.moves.length !== 0) {
+
+            this.moves.length = currentCursor + 1;
+        }
         this.moves.push(moveEntry);
         this.moveIdx = this.moves.length - 1;
     }
@@ -31,27 +39,24 @@ export default class MovesRegistry {
     }
 
     get prevMove() {
-        console.log(this.moves)
-        console.log(this.moveIdx)
         let cursor = this.moveIdx - 1;
-        console.log(cursor)
-        if( cursor <= 0){
+        if (cursor <= 0) {
             cursor = 0;
         }
-       this.moveIdx = cursor;
-       return this.moves[cursor];
+        this.moveIdx = cursor;
+        return this.moves[cursor];
     }
     get nextMove() {
         let cursor = this.moveIdx + 1;
-        if( cursor >= this.moves.length){
-            cursor = this.moves.length-1;
+        if (cursor >= this.moves.length) {
+            cursor = this.moves.length - 1;
         }
         this.moveIdx = cursor;
-        return this.moves[cursor ];
+        return this.moves[cursor];
     }
 
-    getMoveByIdx(moveIdx){
-        if(moveIdx<this.moves.length){
+    getMoveByIdx(moveIdx) {
+        if (moveIdx < this.moves.length) {
             return this.moves[this.moveIdx];
         }
         return null;

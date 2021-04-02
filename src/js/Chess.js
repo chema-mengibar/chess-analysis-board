@@ -6,6 +6,7 @@ import Svg from './chess/chess-svg.js';
 import Clipboard from './utils/clipboard.js';
 import ChessControls from './chess/chess-controls.js';
 
+
 export default class Chess {
 
     constructor(config) {
@@ -35,46 +36,13 @@ export default class Chess {
             isDomainBlackOn: false,
             move: null
         }
+
+        this.record();
     }
 
     lab() {
-        const notations = Utils.parsePgn('');
-        console.log('lab', notations)
-        let cursorColor = white;
-        const r = [];
-        notations.forEach( notation => {
-            const notationParts = Utils.parsePgnNotation(notation, cursorColor);
-            cursorColor = !cursorColor;
-            r.push(notationParts)
-        });
-
-        r.forEach( rItems => {
-            rItems.forEach( rItem => {
-                const {figure, squareFrom, squareTo, color } = rItem;
-                let flag = false;
-                console.log( '###', figure, squareFrom, squareTo, color )
-                this.squaresMap.forEach( (squareValue, squareKey ) =>{
-                    if( !flag && squareFrom === squareKey ){
-                        this.setFigureInSquare(squareTo, figure, color);
-                        this.setFigureInSquare(squareFrom, null);
-                        flag = true;
-                    }
-                    else if(!flag && squareValue && squareValue.color === color &&  squareValue.letter === figure ){
-                        console.log('>>', squareValue)
-                       const options = this.getSquarePieceAllowedSquares(squareKey );
-                        console.log( options )
-                       if( options.includes(squareTo)){
-                           this.setFigureInSquare(squareKey, null);
-                           this.setFigureInSquare(squareTo, figure, color);
-                           flag = true;
-                       }
-                    }
-                })
-
-            })
-        })
-
-        this.drawPiecesFromMap();
+        //const pgnInputStr = MockPgn01;
+        //this.renderPgnToBoard(pgnInputStr);
 
         // Utils.changeHistoryWithFen(fenInputStr);
         // this.drawPiecesFromMap();
@@ -134,19 +102,23 @@ export default class Chess {
             const currentFen = Utils.parseMapToFenStr(this.squaresMap);
             Utils.changeHistoryWithFen(currentFen);
 
-            this.state.move = {
-                from: originSquare,
-                to: targetSquare,
-            };
+            this.setMoveState(originSquare, targetSquare);
             // COM: RePaint domains on move
-            if(this.state.isDomainWhiteOn)  {
+            if (this.state.isDomainWhiteOn) {
                 this.drawDomainByColor(white);
             }
-            if(this.state.isDomainBlackOn){
+            if (this.state.isDomainBlackOn) {
                 this.drawDomainByColor(black);
             }
             return true;
         }
+    }
+
+    setMoveState(originSquare, targetSquare) {
+        this.state.move = {
+            from: originSquare,
+            to: targetSquare,
+        };
     }
 
 
@@ -165,15 +137,67 @@ export default class Chess {
 
     loadPgnFromInput() {
         const pgnInputStr = document.getElementById("pgn-input").value;
+        this.renderPgnToBoard(pgnInputStr);
 
-        //const options = this.getSquarePieceAllowedSquares(squareName );
-        // Utils.changeHistoryWithFen(fenInputStr);
-        // this.drawPiecesFromMap();
+    }
+
+    renderPgnToBoard(pgnInputStr) {
+        const notations = Utils.parsePgn(pgnInputStr);
+
+        let cursorColor = white;
+        const r = [];
+        notations.forEach(notation => {
+            const notationParts = Utils.parsePgnNotation(notation, cursorColor);
+            cursorColor = !cursorColor;
+            r.push(notationParts)
+        });
+
+        r.forEach(rItems => {
+            rItems.forEach(rItem => {
+                const { figure, squareFrom, squareTo, color, eat } = rItem;
+                let flag = false;
+                // console.log( '###', figure, squareFrom, squareTo, color )
+                this.squaresMap.forEach((squareValue, squareKey) => {
+                    if (!flag && squareFrom === squareKey) {
+                        this.setFigureInSquare(squareTo, figure, color);
+                        this.setFigureInSquare(squareFrom, null);
+                        this.setMoveState(squareFrom, squareTo);
+                        this.record();
+                        flag = true;
+                    } else if (!flag && squareValue && squareValue.color === color && squareValue.letter === figure) {
+                        // console.log('1. ', squareValue, squareKey, squareTo)
+                        const options = this.getSquarePieceAllowedSquares(squareKey, null, true);
+                        // console.log('2. OPTIONS: ', options)
+                        if (options.includes(squareTo)) {
+
+                            // check rItem.eat for Pawns, if false, should be same column option square
+                            // also jump
+                            if (figure === 'p') {
+                                const keyCol = squareKey.split('')[0];
+                                const squareToCol = squareTo.split('')[0];
+                                if (!eat && keyCol !== squareToCol) {
+                                    return
+                                }
+                            }
+
+                            this.setFigureInSquare(squareKey, null);
+                            this.setFigureInSquare(squareTo, figure, color);
+                            this.setMoveState(squareKey, squareTo);
+                            this.record();
+                            flag = true;
+                        }
+                    }
+                })
+
+            })
+        })
+
+        this.drawPiecesFromMap();
     }
 
     // ----------------------------------------------- Moves control
 
-     drawFromMove(move){
+    drawFromMove(move) {
         // analog to this.move()
         this.fenToMap(move.fen);
         this.drawPiecesFromMap();
@@ -182,12 +206,18 @@ export default class Chess {
         // this.addMarkerToSquare( move.to, 'marker-move-last' );
         Utils.changeHistoryWithFen(move.fen);
         // COM: RePaint domains on move
-        if(this.state.isDomainWhiteOn)  {
+        if (this.state.isDomainWhiteOn) {
             this.drawDomainByColor(white);
         }
-        if(this.state.isDomainBlackOn){
+        if (this.state.isDomainBlackOn) {
             this.drawDomainByColor(black);
         }
+    }
+
+    record() {
+        const from = this.state.move ? this.state.move.from : null;
+        const to = this.state.move ? this.state.move.to : null;
+        this.movesRegistry.saveMove(from, to, this.squaresMap);
     }
 
     // ----------------------------------------------- Maps
@@ -218,18 +248,18 @@ export default class Chess {
     // ----------------------------------------------- Draw: Markers, Pieces
 
 
-    drawFlankCenterDomains(){
-        const targetRows = [6,5,4,3];
+    drawFlankCenterDomains() {
+        const targetRows = [6, 5, 4, 3];
         const classNameDomain = 'with-flank';
-        flankC.forEach( flankCColLetter =>{
-            targetRows.forEach(row=>{
-               const squareName = Utils.getCellKey(flankCColLetter, row);
+        flankC.forEach(flankCColLetter => {
+            targetRows.forEach(row => {
+                const squareName = Utils.getCellKey(flankCColLetter, row);
                 document.getElementById(`base-${squareName}`).classList.add(classNameDomain);
             })
         })
     }
-    drawRemoveLastStepMoveMarker(){
-        this.markersMap.forEach( markerItemList =>{
+    drawRemoveLastStepMoveMarker() {
+        this.markersMap.forEach(markerItemList => {
             const markerIdx = markerItemList.indexOf('marker-move-last');
             if (markerIdx > -1) {
                 markerItemList.splice(markerIdx, 1);
@@ -300,7 +330,7 @@ export default class Chess {
     }
 
     // ----------------------------------------------- Engine
-    getSquarePieceAllowedSquares(squareName, forcedPieceAndColor = null, allowPawnMove=false) {
+    getSquarePieceAllowedSquares(squareName, forcedPieceAndColor = null, allowPawnMove = false) {
         const limitation = this.config.withLimitation;
         const options = [];
         if (!squareName) {
@@ -468,7 +498,7 @@ export default class Chess {
         if (squarePiece) {
             const squaresOptionsFromFigure = this.getSquarePieceAllowedSquares(squareName);
             squaresOptionsFromFigure.forEach(domainSquareName => {
-               this.drawDomainBySquare(squareName);
+                this.drawDomainBySquare(squareName);
                 this.squaresMap.forEach((squareMapValue, squareMapKey) => {
                     if (squareMapKey !== squareName && squareMapValue && squareMapValue.color !== squarePiece.color) {
                         const squareMapSquareOptions = this.getSquarePieceAllowedSquares(squareMapKey);
@@ -599,11 +629,16 @@ export default class Chess {
                 this.drawPiecesFromMap();
                 const currentFen = Utils.parseMapToFenStr(this.squaresMap);
                 Utils.changeHistoryWithFen(currentFen);
+                this.movesRegistry.reset();
+                this.movesRegistry.record();
             },
             onInit: () => {
                 this.fenToMap(fenBase);
                 this.drawPiecesFromMap();
                 Utils.changeHistoryWithFen(fenBase);
+
+                this.movesRegistry.reset();
+                this.movesRegistry.record();
             },
             onDomainW: async() => {
                 if (!this.state.isDomainWhiteOn) {
@@ -664,26 +699,25 @@ export default class Chess {
                 Clipboard.addTextToClipboard(linkHref);
 
             },
-            onNavPrev:()=>{
+            onNavPrev: () => {
                 const move = this.movesRegistry.prevMove;
-                if(!move){
+                console.log(move)
+                if (!move) {
                     return;
                 }
                 this.drawFromMove(move);
             },
-            onNavNext:()=>{
+            onNavNext: () => {
                 const move = this.movesRegistry.nextMove;
-                if(!move){
+                if (!move) {
                     return;
                 }
                 this.drawFromMove(move);
             },
-            onNavRecord:()=>{
-                const from = this.state.move ? this.state.move.from : null;
-                const to = this.state.move ? this.state.move.to : null;
-                this.movesRegistry.saveMove(from, from, this.squaresMap);
+            onNavRecord: () => {
+                this.record();
             },
-            onLoadPgn:()=>{
+            onLoadPgn: () => {
                 this.loadPgnFromInput()
             }
 

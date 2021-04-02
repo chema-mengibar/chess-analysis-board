@@ -1,7 +1,7 @@
 import { cols, white, black } from './chess-const.js'
 
-function parseConfig(config){
-    return  {
+function parseConfig(config) {
+    return {
         flip: ('flip' in config) ? config.flip : false,
         asIcon: ('asIcon' in config) ? config.asIcon : true,
         asLines: ('asLines' in config) ? config.asLines : true,
@@ -9,15 +9,15 @@ function parseConfig(config){
     }
 }
 
-function changeHistoryWithFen( fen ){
+function changeHistoryWithFen(fen) {
     const url = getAbsoluteRouteWithFen(fen);
     history.pushState({
         id: 'game-move'
     }, '', url);
 }
 
-function getAbsoluteRouteWithFen(fen){
-     return  `${window.location.origin}${window.location.pathname}?fen=${fen}`;
+function getAbsoluteRouteWithFen(fen) {
+    return `${window.location.origin}${window.location.pathname}?fen=${fen}`;
 }
 
 function getCellKey(colLetter, rowNumber) {
@@ -136,26 +136,16 @@ function parseFenStrToObject(fen) {
     return squaresKeyVal;
 }
 
-function parsePgn(pgnStr){
-    const str = `
-        [Event "IBM Kasparov vs. Deep Blue Rematch"]
-        [Site "New York, NY USA"]
-        [Date "1997.05.11"]
-        [Round "6"]
-        [White "Deep Blue"]
-        [Black "Kasparov, Garry"]
-        [Opening "Caro-Kann: 4...Nd7"]
-        [ECO "B17"]
-        [Result "1-0"]
-         
-        1.Nf3 e5 2.Ng5 1-0
-    `;
+function parsePgn(pgnStr) {
 
     let m;
-    const regex = /([0-9]{1,2}.)([\S]+) ([\S]+)/gm;
+    const regex = /([0-9]{1,2}.)\s?([\S]+) ([\S]+)/gm;
     const registry = [];
 
-    while ((m = regex.exec(str)) !== null) {
+    const pgnStrNoHeaders = pgnStr.replace(/(\[.+\])/g, '');
+    const pgnStrNoBr = pgnStrNoHeaders.replace(/(?:\r\n|\r|\n)/g, ' ');
+
+    while ((m = regex.exec(pgnStrNoBr)) !== null) {
         // avoid infinite loops
         if (m.index === regex.lastIndex) {
             regex.lastIndex++;
@@ -166,130 +156,132 @@ function parsePgn(pgnStr){
          group 2: Qd3
          group 3: Bc6
         */
-        console.log(m)
         m.forEach((match, groupIndex) => {
             // console.debug(`[UTILS] parsePgn match: , group ${groupIndex}: ${match}`);
-            if(groupIndex === 0){
+            if (groupIndex === 0) {
                 // Index move
             }
-            if(groupIndex === 2){
+            if (groupIndex === 2) {
                 // Whites move
 
                 registry.push(match);
             }
-            if(groupIndex === 3){
+            if (groupIndex === 3) {
                 // Blacks move
                 registry.push(match);
             }
         });
     }
 
-   return  registry;
+    return registry;
 }
 
 
-function parsePgnNotation( pgnMove, color=white ){
+function parsePgnNotation(pgnMove, color = white) {
     /*
-    * b4!
-    * Sf5!?
-    * Nxf6
-    * O-O
-    * O-O-O
-    * exd5
-    * Bc5
-    * Qd2#
-    * g8=Q
-    * Rf7+
-    * Qh8+
-    * Rcc8
-    * end games: 1-0, ...
-    * mate #
-    * */
+     * b4!
+     * Sf5!?
+     * Nxf6
+     * O-O
+     * O-O-O
+     * exd5
+     * Bc5
+     * Qd2#
+     * g8=Q
+     * Rf7+
+     * Qh8+
+     * Rcc8
+     * end games: 1-0, ...
+     * mate #
+     * */
 
-    const pgnMoveClean1 = pgnMove.replace('#','')
-        .replace('+','')
-        .replace('?','')
-        .replace('!','');
+    const pgnMoveClean1 = pgnMove.replace('#', '')
+        .replace('+', '')
+        .replace('?', '')
+        .replace('!', '');
 
     // endGame case
-    if(['1-0', '1:0', '0-1', '0:1', '1/2-1/2', '*'].includes(pgnMoveClean1)){
+    if (['1-0', '1:0', '0-1', '0:1', '1/2-1/2', '*'].includes(pgnMoveClean1)) {
         return [];
     }
 
     // Short halfMove case
-    if(pgnMoveClean1 === 'O-O'){
-        if(color === white ){
+    if (pgnMoveClean1 === 'O-O') {
+        if (color === white) {
 
             return [
-                {figure:'k', squareFrom:'e1', squareTo:'g1', color},
-                {figure:'r',squareFrom:'h1', squareTo:'f1', color},
+                { figure: 'k', squareFrom: 'e1', squareTo: 'g1', color },
+                { figure: 'r', squareFrom: 'h1', squareTo: 'f1', color },
             ];
         }
         return [
-            {figure:'k', squareFrom:'e8', squareTo:'g8', color},
-            {figure:'r',squareFrom:'h8', squareTo:'f8', color},
+            { figure: 'k', squareFrom: 'e8', squareTo: 'g8', color },
+            { figure: 'r', squareFrom: 'h8', squareTo: 'f8', color },
         ];
     }
 
     // Long halfMove case
-    if(pgnMoveClean1 === 'O-O-O'){
-        if(color === white ){
+    if (pgnMoveClean1 === 'O-O-O') {
+        if (color === white) {
             return [
-                {figure:'k',  squareFrom:'e1', squareTo:'c1', color},
-                {figure:'r', squareFrom:'a1',squareTo:'d1', color},
+                { figure: 'k', squareFrom: 'e1', squareTo: 'c1', color },
+                { figure: 'r', squareFrom: 'a1', squareTo: 'd1', color },
             ];
         }
         return [
-            {figure:'k',  squareFrom:'e8', squareTo:'c8', color},
-            {figure:'r', squareFrom:'a8',squareTo:'d8', color},
+            { figure: 'k', squareFrom: 'e8', squareTo: 'c8', color },
+            { figure: 'r', squareFrom: 'a8', squareTo: 'd8', color },
         ];
     }
 
     // Pawn promotion case: g8=Q
-    if(pgnMoveClean1.indexOf('=' )> -1){
+    if (pgnMoveClean1.indexOf('=') > -1) {
         const partsChange = pgnMoveClean1.split('=');
-        return [
-            {
-                figure:partsChange[1].toLowerCase(),
-                squareTo:partsChange[0], color
-            },
-        ];
+        return [{
+            figure: partsChange[1].toLowerCase(),
+            squareTo: partsChange[0],
+            color
+        }, ];
     }
 
     const regExpSquare = /([a-z]{1}[0-9]{1})/g;
     const matchSquare = regExpSquare.exec(pgnMoveClean1);
+
     const pgnSquareName = matchSquare[1];
     const pgnMoveClean2 = pgnMoveClean1.replace(pgnSquareName, '');
-    const pgnMoveCleanNoX = pgnMoveClean2.replace('x','');
+
+    let eat = false
+
+    if (pgnMoveClean2.includes('x')) {
+        eat = true;
+    }
 
     // Pawn case
-    if(pgnMoveCleanNoX === pgnMoveCleanNoX.toLowerCase()){
-        return [
-            {
-                figure:'p',
-                squareFrom:pgnMoveCleanNoX,
-                squareTo:pgnSquareName, color
-            },
-        ];
+    if (pgnMoveClean2 === pgnMoveClean2.toLowerCase()) {
+        return [{
+            figure: 'p',
+            squareFrom: pgnMoveClean2,
+            squareTo: pgnSquareName,
+            color,
+            eat
+        }, ];
     }
 
     let squareFrom = '';
     let figure = '';
-    if( pgnMoveCleanNoX.length === 2){
-        squareFrom = pgnMoveCleanNoX[1];
-        figure =  pgnMoveCleanNoX[0].toLowerCase();
+    if (pgnMoveClean2.length === 2) {
+        squareFrom = pgnMoveClean2[1];
+        figure = pgnMoveClean2[0].toLowerCase();
+    } else {
+        figure = pgnMoveClean2.toLowerCase();
     }
-    else{
-        figure =  pgnMoveCleanNoX.toLowerCase();
-    }
-    return [
-        {
-            figure:figure,
-            squareFrom:squareFrom,
-            squareTo:pgnSquareName,color
-
-        },
-    ];
+    return [{
+        figure: figure,
+        squareFrom: squareFrom,
+        squareTo: pgnSquareName,
+        color,
+        eat
+    }, ];
 
 }
 

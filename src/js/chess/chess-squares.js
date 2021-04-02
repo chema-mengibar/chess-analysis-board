@@ -82,7 +82,7 @@ function getSquaresOptionsFromSquareWithP(
         [1, cellY],
         [-1, cellY]
     ];
-    if(allowPawnMove){
+    if (allowPawnMove) {
         pCombis.push([0, cellY]);
         const cellYplus2 = color ? squareRowNumber + 2 : squareRowNumber - 2;
         pCombis.push([0, cellYplus2]);
