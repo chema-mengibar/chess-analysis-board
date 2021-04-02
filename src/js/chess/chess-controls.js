@@ -15,7 +15,6 @@ export default class ChessControl {
             boardSquare.addEventListener('click', function(event) {
                 const targetElement = event.target || event.srcElement;
                 const targetSquareName = targetElement.getAttribute('data-square');
-                // console.log('[CONTROLS] square click:', targetSquareName);
                 self.checkOnSelectSquare(targetSquareName);
             }, false);
         })
@@ -23,7 +22,6 @@ export default class ChessControl {
     }
 
     async checkOnSelectSquare(selectedSquare) {
-        // console.log('[CONTROLS] checkOnSelectSquare:', selectedSquare, this.buffer.squareTarget);
         if (this.buffer.squareTarget) {
             if (selectedSquare === this.buffer.squareTarget) {
                 this.clearBufferAndSelection();

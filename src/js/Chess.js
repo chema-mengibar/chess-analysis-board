@@ -5,7 +5,7 @@ import Squares from './chess/chess-squares.js';
 import Svg from './chess/chess-svg.js';
 import Clipboard from './utils/clipboard.js';
 import ChessControls from './chess/chess-controls.js';
-
+import MockPgn01 from './mocks/pgn-01.mocks';
 
 export default class Chess {
 
@@ -41,8 +41,6 @@ export default class Chess {
     }
 
     lab() {
-        //const pgnInputStr = MockPgn01;
-        //this.renderPgnToBoard(pgnInputStr);
 
         // Utils.changeHistoryWithFen(fenInputStr);
         // this.drawPiecesFromMap();
@@ -85,7 +83,8 @@ export default class Chess {
         boardCoordinate.forEach(squareNode => {
             squareNode.remove();
         })
-        this.render()
+
+        this.render();
     }
 
     async move(originSquare, targetSquare) {
@@ -156,7 +155,6 @@ export default class Chess {
             rItems.forEach(rItem => {
                 const { figure, squareFrom, squareTo, color, eat } = rItem;
                 let flag = false;
-                // console.log( '###', figure, squareFrom, squareTo, color )
                 this.squaresMap.forEach((squareValue, squareKey) => {
                     if (!flag && squareFrom === squareKey) {
                         this.setFigureInSquare(squareTo, figure, color);
@@ -165,11 +163,8 @@ export default class Chess {
                         this.record();
                         flag = true;
                     } else if (!flag && squareValue && squareValue.color === color && squareValue.letter === figure) {
-                        // console.log('1. ', squareValue, squareKey, squareTo)
                         const options = this.getSquarePieceAllowedSquares(squareKey, null, true);
-                        // console.log('2. OPTIONS: ', options)
                         if (options.includes(squareTo)) {
-
                             // check rItem.eat for Pawns, if false, should be same column option square
                             // also jump
                             if (figure === 'p') {
@@ -220,7 +215,7 @@ export default class Chess {
         this.movesRegistry.saveMove(from, to, this.squaresMap);
     }
 
-    // ----------------------------------------------- Maps
+    // ----------------------------------------------- Map fcts
 
     setFigureInSquare(squareName, letter, color = white) {
         this.squaresMap.set(squareName, Utils.asSquare(letter, color));
@@ -537,7 +532,7 @@ export default class Chess {
             this.squaresMap.forEach((squareMapValue, squareMapKey) => {
                 if (squareMapKey !== squareName && squareMapValue && squareMapValue.color === squarePiece.color) {
                     const squareMapSquareOptions = this.getSquarePieceAllowedSquares(squareMapKey);
-                    console.debug('[CHESS] drawSupportToSquare: mapOptions', squareMapSquareOptions);
+                    // console.debug('[CHESS] drawSupportToSquare: mapOptions', squareMapSquareOptions);
                     if (squareMapSquareOptions.includes(squareName)) {
                         isSquareSupported = true;
                         const markerIdByColor = Svg.getMarkerCircleIdByColor(squareMapValue.color);
@@ -701,7 +696,6 @@ export default class Chess {
             },
             onNavPrev: () => {
                 const move = this.movesRegistry.prevMove;
-                console.log(move)
                 if (!move) {
                     return;
                 }

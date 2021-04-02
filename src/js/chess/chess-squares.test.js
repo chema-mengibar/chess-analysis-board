@@ -33,3 +33,32 @@ describe('Squares getSquaresOptionsFromSquareWithR', () => {
 
 
 })
+
+
+describe('Squares getSquaresOptionsFromSquareWithN', () => {
+
+    it('should return - todo-01', () => {
+        // todo
+    });
+})
+
+describe('Squares getSquaresOptionsFromSquareWithP', () => {
+
+    it('should return - todo-02', () => {
+        // todo
+    });
+})
+
+describe('Squares getSquaresOptionsFromSquareWithB', () => {
+
+    it('should return - todo-03', () => {
+        // todo
+    });
+})
+
+describe('Squares getSquaresOptionsFromSquareWithK', () => {
+
+    it('should return - todo-04', () => {
+        // todo
+    });
+})
