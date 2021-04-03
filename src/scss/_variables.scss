@@ -4,7 +4,11 @@
     --color-marker-black: rgb(231, 68, 43);
     --color-marker-ok: rgb(0, 255, 95);
     --color-marker-error: rgb(255, 0, 4);
-    --color-marker-notation: white;
+    --color-marker-notation-default: white;
+    --color-marker-notation-neutral: black;
+    --color-marker-notation-alert: rgb(255, 0, 4);
+    --color-marker-notation-ok: rgb(0, 255, 95);
+    --color-marker-notation-advice: rgba(255, 189, 0, 0.57);
     --color-board-base-fill: rgba(39, 42, 49, .5);
     --color-board-base-stroke: rgba(180, 181, 185, 0.34);
     --color-board-base-fill-hover: #02010166;

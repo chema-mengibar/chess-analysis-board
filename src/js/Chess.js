@@ -325,6 +325,42 @@ export default class Chess {
     }
 
     // ----------------------------------------------- Engine
+
+
+    boardSquareDangerSupportRepor(selfColor = white) {
+
+        this.squaresMap.forEach((squareMapValueA, squareMapKeyA) => {
+            let countSupport = 0;
+            let countDanger = 0;
+            this.squaresMap.forEach((squareMapValueB, squareMapKeyB) => {
+                const piece = squareMapValueB;
+                if (!piece) {
+                    return
+                }
+                const squareMapSquareOptions = this.getSquarePieceAllowedSquares(squareMapKeyB);
+                if (squareMapSquareOptions.includes(squareMapKeyA)) {
+
+                    if (squareMapValueA && squareMapValueB && squareMapValueA.color === squareMapValueB.color) {
+                        countSupport += 1;
+                    } else if (squareMapValueA && squareMapValueB && squareMapValueA.color !== squareMapValueB.color) {
+                        countDanger += 1;
+                    } else if (!squareMapValueA) {
+                        if (piece.color === selfColor) {
+                            countSupport += 1;
+
+                        } else {
+                            countDanger += 1;
+                        }
+                    }
+
+                }
+
+            })
+            const colorType = Svg.mapNotationColorType(countSupport, countDanger, squareMapValueA, selfColor);
+            Svg.addMarkerNotation(squareMapKeyA, `${countSupport}-${countDanger}`, colorType);
+        })
+    }
+
     getSquarePieceAllowedSquares(squareName, forcedPieceAndColor = null, allowPawnMove = false) {
         const limitation = this.config.withLimitation;
         const options = [];
@@ -713,7 +749,16 @@ export default class Chess {
             },
             onLoadPgn: () => {
                 this.loadPgnFromInput()
+            },
+            onDisplayReportBalanceWhites: () => {
+                this.drawRemoveAllMarkers();
+                this.boardSquareDangerSupportRepor(white)
+            },
+            onDisplayReportBalanceBlacks: () => {
+                this.drawRemoveAllMarkers();
+                this.boardSquareDangerSupportRepor(black);
             }
+
 
         }
     }

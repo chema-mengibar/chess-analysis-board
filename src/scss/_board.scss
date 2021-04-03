@@ -27,16 +27,15 @@
 }
 
 .base {
-    &.with-domain-black:not(.with-domain-white):not(.with-selection):not(.with-flank){
+    &.with-domain-black:not(.with-domain-white):not(.with-selection):not(.with-flank) {
         fill: var(--color-board-base-domain-black);
     }
-    &.with-domain-white:not(.with-domain-black):not(.with-selection):not(.with-flank){
+    &.with-domain-white:not(.with-domain-black):not(.with-selection):not(.with-flank) {
         fill: var(--color-board-base-domain-white);
     }
-    &.with-domain-white.with-domain-black:not(.with-selection):not(.with-flank){
+    &.with-domain-white.with-domain-black:not(.with-selection):not(.with-flank) {
         fill: var(--color-board-base-domain-both);
     }
-
     &.with-flank {
         stroke: var(--color-board-base-flank);
     }
@@ -52,9 +51,23 @@
 }
 
 .marker-square-notation {
-    fill: var(--color-marker-notation);
-    font-size: 3px;
+    font-size: 2.5px;
     font-family: Arial, Helvetica, sans-serif;
+    &.default {
+        fill: var(--color-marker-notation-default);
+    }
+    &.alert {
+        fill: var(--color-marker-notation-alert);
+    }
+    &.ok {
+        fill: var(--color-marker-notation-ok);
+    }
+    &.advice {
+        fill: var(--color-marker-notation-advice);
+    }
+    &.neutral {
+        fill: var(--color-marker-notation-neutral);
+    }
 }
 
 .marker-circle-neutral {

@@ -80,14 +80,15 @@ function addMarkerMoveLast(squareName) {
     squareNode.appendChild(use);
 }
 
-function addMarkerNotation(squareName, text) {
+function addMarkerNotation(squareName, text, type = 'default') {
     const textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
     const textNode = document.createTextNode(text);
     textEl.setAttribute('x', `${div}%`);
     textEl.setAttribute('y', '0');
+    textEl.setAttribute('dx', '-0.5');
     textEl.setAttribute('dy', '3');
     textEl.setAttribute('data-square', `${squareName}`);
-    textEl.setAttribute('class', 'marker-square-notation');
+    textEl.setAttribute('class', `marker-square-notation ${type}`);
     textEl.setAttribute('text-anchor', 'end');
     textEl.appendChild(textNode);
 
@@ -188,7 +189,7 @@ function createCoordinates(flipedRows, flipedCols) {
     return elements;
 }
 
-function  getMarkerCircleIdByColor(color) {
+function getMarkerCircleIdByColor(color) {
     return color ? 'marker-circle-white' : 'marker-circle-black';
 }
 
@@ -221,6 +222,42 @@ function drawMarkerInSquare(squareName, markerId) {
     }
 }
 
+function mapNotationColorType(
+    countSupport,
+    countDanger,
+    squarePiece,
+    targetColor = white
+) {
+    let colorType = 'default';
+
+    if (countDanger === 0 && countSupport > 0 &&
+        ((squarePiece && squarePiece.color !== targetColor))
+    ) {
+        colorType = 'advice';
+    }
+    if (countSupport > countDanger &&
+        ((squarePiece && squarePiece.color !== targetColor))
+    ) {
+        colorType = 'advice';
+    }
+    if ((countDanger > 0 && countSupport === 0) || (countDanger > countSupport)) {
+        colorType = 'alert';
+    }
+    if (countDanger === 0 && countSupport === 0 && !squarePiece) {
+        colorType = 'neutral';
+    }
+    if (countDanger === countSupport && squarePiece && squarePiece.color === targetColor) {
+        colorType = 'alert';
+    }
+    if (countSupport > countDanger &&
+        ((squarePiece && squarePiece.color === targetColor) || !squarePiece)
+    ) {
+        colorType = 'ok';
+    }
+
+    return colorType;
+}
+
 export default {
     getDomainClassNameByColor,
     getMarkerCircleIdByColor,
@@ -234,7 +271,8 @@ export default {
     removeSquareMarkers,
     drawArrowInSquares,
     toggleShowMarkersContainer,
-    drawMarkerInSquare
+    drawMarkerInSquare,
+    mapNotationColorType
 }
 
 /*

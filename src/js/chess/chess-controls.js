@@ -191,6 +191,16 @@ export default class ChessControl {
             self.callBacks.onLoadPgn();
         }, false);
 
+        const buttonReportBalanceWhites = document.getElementById("button-paint-report-balance-whites");
+        buttonReportBalanceWhites.addEventListener('click', function() {
+            self.callBacks.onDisplayReportBalanceWhites();
+        }, false);
+
+        const buttonReportBalanceBlacks = document.getElementById("button-paint-report-balance-blacks");
+        buttonReportBalanceBlacks.addEventListener('click', function() {
+            self.callBacks.onDisplayReportBalanceBlacks();
+        }, false);
+
     }
 
     async setBufferSquareTarget(squareName) {
