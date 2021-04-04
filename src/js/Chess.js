@@ -147,7 +147,6 @@ export default class Chess {
                 cursorColor = !cursorColor;
                 r.push(notationParts)
             });
-            console.log(r);
             r.forEach(rItems => {
                 rItems.forEach(rItem => {
                     const { figure, figureToChange, squareFrom, squareTo, color, capture } = rItem;
