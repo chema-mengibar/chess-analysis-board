@@ -5,7 +5,6 @@ import Squares from './chess/chess-squares.js';
 import Svg from './chess/chess-svg.js';
 import Clipboard from './utils/clipboard.js';
 import ChessControls from './chess/chess-controls.js';
-import MockPgn01 from './mocks/pgn-01.mocks';
 
 export default class Chess {
 
@@ -42,6 +41,9 @@ export default class Chess {
 
     lab() {
 
+        //this.renderPgnToBoard(Mock4);
+        //const move = this.movesRegistry.goToGameMove(13);
+
         // Utils.changeHistoryWithFen(fenInputStr);
         // this.drawPiecesFromMap();
 
@@ -49,12 +51,6 @@ export default class Chess {
         // Svg.drawMarkerInSquare('e4', 'id');
         // this.addMarkerToSquare('e4', 'marker-circle-white');
         // this.actionsBridge.onDomainB()
-    }
-
-    labMoves() {
-        // In progress
-        //this.move('a2', 'a3');
-
     }
 
     // ----------------------------------------------- Pieces & Board
@@ -145,49 +141,59 @@ export default class Chess {
 
         let cursorColor = white;
         const r = [];
-        notations.forEach(notation => {
-            const notationParts = Utils.parsePgnNotation(notation, cursorColor);
-            cursorColor = !cursorColor;
-            r.push(notationParts)
-        });
-
-        r.forEach(rItems => {
-            rItems.forEach(rItem => {
-                const { figure, squareFrom, squareTo, color, eat } = rItem;
-                let flag = false;
-                this.squaresMap.forEach((squareValue, squareKey) => {
-                    if (!flag && squareFrom === squareKey) {
-                        this.setFigureInSquare(squareTo, figure, color);
-                        this.setFigureInSquare(squareFrom, null);
-                        this.setMoveState(squareFrom, squareTo);
-                        this.record();
-                        flag = true;
-                    } else if (!flag && squareValue && squareValue.color === color && squareValue.letter === figure) {
-                        const options = this.getSquarePieceAllowedSquares(squareKey, null, true);
-                        if (options.includes(squareTo)) {
-                            // check rItem.eat for Pawns, if false, should be same column option square
-                            // also jump
-                            if (figure === 'p') {
-                                const keyCol = squareKey.split('')[0];
-                                const squareToCol = squareTo.split('')[0];
-                                if (!eat && keyCol !== squareToCol) {
-                                    return
-                                }
-                            }
-
-                            this.setFigureInSquare(squareKey, null);
+        try {
+            notations.forEach(notation => {
+                const notationParts = Utils.parsePgnNotation(notation, cursorColor);
+                cursorColor = !cursorColor;
+                r.push(notationParts)
+            });
+            console.log(r);
+            r.forEach(rItems => {
+                rItems.forEach(rItem => {
+                    const { figure, figureToChange, squareFrom, squareTo, color, capture } = rItem;
+                    let flag = false;
+                    this.squaresMap.forEach((squareValue, squareKey) => {
+                        if (!flag && squareFrom === squareKey) {
                             this.setFigureInSquare(squareTo, figure, color);
-                            this.setMoveState(squareKey, squareTo);
+                            this.setFigureInSquare(squareFrom, null);
+                            this.setMoveState(squareFrom, squareTo);
                             this.record();
                             flag = true;
+                        } else if (!flag && squareValue && squareValue.color === color && squareValue.letter === figure) {
+                            const options = this.getSquarePieceAllowedSquares(squareKey, null, true);
+                            if (options.includes(squareTo)) {
+                                //jump if move from not contain notation origin square letter-col/row-number
+                                if (squareFrom && !squareKey.includes(squareFrom)) {
+                                    return;
+                                }
+                                // check rItem.capture for Pawns, if false, should be same column option square
+                                // also jump
+                                if (figure === 'p') {
+                                    const keyCol = squareKey.split('')[0];
+                                    const squareToCol = squareTo.split('')[0];
+                                    if (!capture && keyCol !== squareToCol) {
+                                        return
+                                    }
+                                }
+
+                                const figureToSet = figureToChange || figure
+                                this.setFigureInSquare(squareKey, null);
+                                this.setFigureInSquare(squareTo, figureToSet, color);
+                                this.setMoveState(squareKey, squareTo);
+                                this.record();
+                                flag = true;
+                            }
                         }
-                    }
+                    })
+
                 })
-
             })
-        })
 
-        this.drawPiecesFromMap();
+            this.drawPiecesFromMap();
+        } catch (error) {
+            console.error('[PGN PARSER] error', error);
+        }
+
     }
 
     // ----------------------------------------------- Moves control
@@ -326,12 +332,11 @@ export default class Chess {
 
     // ----------------------------------------------- Engine
 
-
     boardSquareDangerSupportRepor(selfColor = white) {
-
         this.squaresMap.forEach((squareMapValueA, squareMapKeyA) => {
             let countSupport = 0;
             let countDanger = 0;
+            let note = '';
             this.squaresMap.forEach((squareMapValueB, squareMapKeyB) => {
                 const piece = squareMapValueB;
                 if (!piece) {
@@ -339,25 +344,26 @@ export default class Chess {
                 }
                 const squareMapSquareOptions = this.getSquarePieceAllowedSquares(squareMapKeyB);
                 if (squareMapSquareOptions.includes(squareMapKeyA)) {
-
                     if (squareMapValueA && squareMapValueB && squareMapValueA.color === squareMapValueB.color) {
                         countSupport += 1;
+
+                        if (squareMapValueB.letter === 'k') {
+                            note = '#';
+                        }
+
                     } else if (squareMapValueA && squareMapValueB && squareMapValueA.color !== squareMapValueB.color) {
                         countDanger += 1;
                     } else if (!squareMapValueA) {
                         if (piece.color === selfColor) {
                             countSupport += 1;
-
                         } else {
                             countDanger += 1;
                         }
                     }
-
                 }
-
             })
             const colorType = Svg.mapNotationColorType(countSupport, countDanger, squareMapValueA, selfColor);
-            Svg.addMarkerNotation(squareMapKeyA, `${countSupport}-${countDanger}`, colorType);
+            Svg.addMarkerNotation(squareMapKeyA, `${note}${countSupport}-${countDanger}`, colorType);
         })
     }
 

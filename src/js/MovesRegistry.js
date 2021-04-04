@@ -1,11 +1,11 @@
 import Utils from './chess/chess-utils.js';
+import { white } from './chess/chess-const.js';
 
 export default class MovesRegistry {
 
     constructor() {
         this.moves = [];
         this.moveIdx = 0;
-
     }
 
     reset() {
@@ -62,5 +62,10 @@ export default class MovesRegistry {
         return null;
     }
 
+    goToGameMove(gameMoveIdx = 1, color = white) {
+        const cursor = (gameMoveIdx * 2) - (color ? 2 : 1) + 1; // +1, fix, because the initial position counts like a move
+        this.moveIdx = cursor;
+        return this.moves[cursor];
+    }
 
 }

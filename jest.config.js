@@ -5,4 +5,7 @@ module.exports = {
     transform: {
         '.js': 'jest-esm-transformer',
     },
+    setupFiles: [
+        "./src/js/mocks/client.js"
+    ],
 };

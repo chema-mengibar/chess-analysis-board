@@ -1,0 +1,15 @@
+export default `
+[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2021.04.02"]
+[Round "?"]
+[White "kolegaKrzychu"]
+[Black "Enjuten"]
+[Result "1-0"]
+[ECO "C02"]
+[WhiteElo "752"]
+[BlackElo "742"]
+[TimeControl "900+10"]
+[EndTime "2:46:03 PDT"]
+[Termination "kolegaKrzychu won by checkmate"]
+1. e4 e6 2. e5 d5 3. d4 Ne7 4. Qf3 c6 5. Nh3 Nf5 6. Ng5 Nxd4 7. Qxf7# 1-0`;

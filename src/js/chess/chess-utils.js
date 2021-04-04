@@ -139,7 +139,7 @@ function parseFenStrToObject(fen) {
 function parsePgn(pgnStr) {
 
     let m;
-    const regex = /([0-9]{1,2}.)\s?([\S]+) ([\S]+)/gm;
+    const regex = /([0-9]{1,2}\.)\s?([\S]+) ([\S]+)/gm;
     const registry = [];
 
     const pgnStrNoHeaders = pgnStr.replace(/(\[.+\])/g, '');
@@ -181,6 +181,8 @@ function parsePgnNotation(pgnMove, color = white) {
     /*
      * b4!
      * Sf5!?
+     * Ndxf6 <<< BUG !
+     * R8xf7 <<< BUG ?
      * Nxf6
      * O-O
      * O-O-O
@@ -238,50 +240,55 @@ function parsePgnNotation(pgnMove, color = white) {
     if (pgnMoveClean1.indexOf('=') > -1) {
         const partsChange = pgnMoveClean1.split('=');
         return [{
-            figure: partsChange[1].toLowerCase(),
+            figure: 'p',
+            figureToChange: partsChange[1].toLowerCase(),
             squareTo: partsChange[0],
             color
         }, ];
     }
 
-    const regExpSquare = /([a-z]{1}[0-9]{1})/g;
-    const matchSquare = regExpSquare.exec(pgnMoveClean1);
+    try {
+        const regExpSquare = /([a-z]{1}[0-9]{1})/g;
+        const matchSquare = regExpSquare.exec(pgnMoveClean1);
 
-    const pgnSquareName = matchSquare[1];
-    const pgnMoveClean2 = pgnMoveClean1.replace(pgnSquareName, '');
+        const pgnSquareName = matchSquare[1];
+        const pgnMoveClean2 = pgnMoveClean1.replace(pgnSquareName, '');
 
-    let eat = false
+        let capture = false
 
-    if (pgnMoveClean2.includes('x')) {
-        eat = true;
-    }
+        if (pgnMoveClean2.includes('x')) {
+            capture = true;
+        }
+        // Pawn case
+        if (pgnMoveClean2 === pgnMoveClean2.toLowerCase()) {
+            return [{
+                figure: 'p',
+                squareFrom: pgnMoveClean2.replace('x', ''),
+                squareTo: pgnSquareName,
+                color,
+                capture
+            }, ];
+        }
 
-    // Pawn case
-    if (pgnMoveClean2 === pgnMoveClean2.toLowerCase()) {
+        let squareFrom = '';
+        let figure = '';
+        if (pgnMoveClean2.length >= 2) {
+            squareFrom = pgnMoveClean2[1].replace('x', '');
+            figure = pgnMoveClean2[0].toLowerCase();
+        } else {
+            figure = pgnMoveClean2.toLowerCase();
+        }
         return [{
-            figure: 'p',
-            squareFrom: pgnMoveClean2,
+            figure: figure,
+            squareFrom: squareFrom,
             squareTo: pgnSquareName,
             color,
-            eat
+            capture
         }, ];
+    } catch (error) {
+        throw new Error(`${error} >> ${pgnMove} ${pgnMoveClean1}`);
     }
 
-    let squareFrom = '';
-    let figure = '';
-    if (pgnMoveClean2.length === 2) {
-        squareFrom = pgnMoveClean2[1];
-        figure = pgnMoveClean2[0].toLowerCase();
-    } else {
-        figure = pgnMoveClean2.toLowerCase();
-    }
-    return [{
-        figure: figure,
-        squareFrom: squareFrom,
-        squareTo: pgnSquareName,
-        color,
-        eat
-    }, ];
 
 }
 
