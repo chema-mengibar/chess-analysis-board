@@ -1,4 +1,4 @@
-export default class ChessControl {
+export default class ControlsService {
 
     constructor(callBacks) {
         this.buffer = {
@@ -6,7 +6,6 @@ export default class ChessControl {
         };
         this.callBacks = callBacks;
         this.panelControls();
-
     }
 
     squareControls() {
@@ -20,6 +19,7 @@ export default class ChessControl {
         })
 
     }
+
 
     async checkOnSelectSquare(selectedSquare) {
         if (this.buffer.squareTarget) {

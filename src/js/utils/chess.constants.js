@@ -1,16 +1,12 @@
-import Figure from '../Figure.js'
+import Figure from './Figure.js'
 
 export const rows = [8, 7, 6, 5, 4, 3, 2, 1];
 export const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-export const fenBase = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-
-export const flankQ = ['a', 'b', 'c', 'd', ];
-export const flankK = ['e', 'f', 'g', 'h', ];
-export const flankC = ['c','d', 'e','f' ];
-
 export const white = true;
 export const black = false;
+
+export const fenBase = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 export const figures = {
     b: new Figure({ letterW: 'B', iconW: '♗', letterB: 'b', iconB: '♝' }),
