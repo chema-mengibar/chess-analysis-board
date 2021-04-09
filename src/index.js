@@ -10,7 +10,7 @@ import './index.scss';
 // }
 
 const configA = {
-    fen: '',
+    // fen: '',
     asIcon: true,
     asLines: true,
     withLimitation: true,

@@ -1,17 +1,11 @@
 import SquareUtils from '../../utils/square.utils.js';
-import { rows, cols, white } from '../../utils/chess.constants.js';
+import { rows, cols, white, fenBase } from '../../utils/chess.constants.js';
 
 export default class BoardService {
 
     constructor(config = null, services) {
 
         this.gameExportService = services.gameExportService;
-
-        if (config && 'fen' in config) {
-            this._squaresMap = this.gameExportService.fenToMap(config.fen);
-        } else {
-            this._squaresMap = this.createSquaresMap(rows, cols);
-        }
 
         this.moves = [];
         this.moveIdx = 0;
@@ -20,6 +14,24 @@ export default class BoardService {
             move: null
         }
 
+        if (config && 'fen' in config && config.fen) {
+            this.init(config.fen);
+        } else {
+            this.createSquaresMap(rows, cols);
+        }
+
+
+
+    }
+
+    init(fen = fenBase) {
+        this._squaresMap = this.gameExportService.fenToMap(fen);
+        this.movesReset()
+    }
+
+    clear() {
+        this.createSquaresMap(rows, cols);
+        this.movesReset()
     }
 
     updateSquareMapFromMove(move) {
@@ -47,7 +59,7 @@ export default class BoardService {
                 listSquares.push([squareKey, null]);
             })
         })
-        return new Map(listSquares);
+        this._squaresMap = new Map(listSquares);
     }
 
     setFigureInSquare(squareName, letter, color = white) {
@@ -62,18 +74,6 @@ export default class BoardService {
             this.setFigureInSquare(originSquare, null);
             this.setMoveState(originSquare, targetSquare);
 
-            const currentFen = this.gameExportService.convertSquareMapToFenStr(this._squaresMap);
-            this.gameExportService.changeHistoryWithFen(currentFen);
-
-            // todo:refactor
-            // this.drawPiecesFromMap();
-            // // COM: RePaint domains on move
-            // if (this.state.isDomainWhiteOn) {
-            //     this.drawDomainByColor(white);
-            // }
-            // if (this.state.isDomainBlackOn) {
-            //     this.drawDomainByColor(black);
-            // }
             return true;
         }
     }
@@ -81,6 +81,9 @@ export default class BoardService {
     movesReset() {
         this.moveIdx = 0;
         this.moves.length = this.moveIdx;
+        this.state = {
+            move: null
+        }
     }
 
     moveSave() {

@@ -637,45 +637,45 @@ export default class Chess {
             onShowSquareDomainSupport: (squareTarget) => {
                 this.drawSupportToSquareDomain(squareTarget);
             },
-            onFlip: () => {
-                this.flipBoard()
-            },
-            movePiecesFromSquares: async(originSquare, targetSquare) => {
-                return this.move(originSquare, targetSquare);
-            },
-            onAddMarker: (squareTarget, markerId) => {
-                this.addMarkerToSquare(squareTarget, markerId, true);
-            },
-            onAdd: (square, letter, color) => {
-                if (!square) { return; }
-                this.setFigureInSquare(square, letter, color);
-                const currentFen = Utils.parseMapToFenStr(this.squaresMap);
-                Utils.changeHistoryWithFen(currentFen);
-                this.drawPiecesFromMap();
-            },
-            onClearSquare: (square) => {
-                if (!square) { return; }
-                this.setFigureInSquare(square, null);
-                const currentFen = Utils.parseMapToFenStr(this.squaresMap);
-                Utils.changeHistoryWithFen(currentFen);
-                this.drawPiecesFromMap();
-            },
-            onClear: () => {
-                this.squaresMap = Utils.createSquaresMap(rows, cols);
-                this.drawPiecesFromMap();
-                const currentFen = Utils.parseMapToFenStr(this.squaresMap);
-                Utils.changeHistoryWithFen(currentFen);
-                this.movesRegistry.reset();
-                this.movesRegistry.record(); // ref: recordMoveInRegistry
-            },
-            onInit: () => {
-                this.fenToMap(fenBase);
-                this.drawPiecesFromMap();
-                Utils.changeHistoryWithFen(fenBase);
+            // onFlip: () => {
+            //     this.flipBoard()
+            // },
+            // movePiecesFromSquares: async(originSquare, targetSquare) => {
+            //     return this.move(originSquare, targetSquare);
+            // },
+            // onAddMarker: (squareTarget, markerId) => {
+            //     this.addMarkerToSquare(squareTarget, markerId, true);
+            // },
+            // onAdd: (square, letter, color) => {
+            //     if (!square) { return; }
+            //     this.setFigureInSquare(square, letter, color);
+            //     const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+            //     Utils.changeHistoryWithFen(currentFen);
+            //     this.drawPiecesFromMap();
+            // },
+            // onClearSquare: (square) => {
+            //     if (!square) { return; }
+            //     this.setFigureInSquare(square, null);
+            //     const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+            //     Utils.changeHistoryWithFen(currentFen);
+            //     this.drawPiecesFromMap();
+            // },
+            // onClear: () => {
+            //     this.squaresMap = Utils.createSquaresMap(rows, cols);
+            //     this.drawPiecesFromMap();
+            //     const currentFen = Utils.parseMapToFenStr(this.squaresMap);
+            //     Utils.changeHistoryWithFen(currentFen);
+            //     this.movesRegistry.reset();
+            //     this.movesRegistry.record(); // ref: recordMoveInRegistry
+            // },
+            // onInit: () => {
+            //     this.fenToMap(fenBase);
+            //     this.drawPiecesFromMap();
+            //     Utils.changeHistoryWithFen(fenBase);
 
-                this.movesRegistry.reset();
-                this.movesRegistry.record(); // ref: recordMoveInRegistry
-            },
+            //     this.movesRegistry.reset();
+            //     this.movesRegistry.record(); // ref: recordMoveInRegistry
+            // },
             onDomainW: async() => {
                 if (!this.state.isDomainWhiteOn) {
                     this.drawDomainByColor(white);

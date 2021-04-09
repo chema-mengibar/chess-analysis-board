@@ -26,7 +26,7 @@ export default class ControlsService {
             if (selectedSquare === this.buffer.squareTarget) {
                 this.clearBufferAndSelection();
             } else {
-                const moved = await this.callBacks.movePiecesFromSquares(this.buffer.squareTarget, selectedSquare);
+                const moved = this.callBacks.movePiecesFromSquares(this.buffer.squareTarget, selectedSquare);
                 if (moved) {
                     this.clearBufferAndSelection();
                 } else {

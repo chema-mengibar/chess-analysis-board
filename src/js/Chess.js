@@ -18,19 +18,20 @@ export default class Chess {
 
         this.config = this.parseConfig(config);
 
-        const gameExportService = new GameExportService(null);
+        this.gameExportService = new GameExportService(null);
 
-        const boardService = new BoardService(this.config.board, { gameExportService });
+        this.boardService = new BoardService(this.config.board, { gameExportService: this.gameExportService });
 
-        const boardRenderService = new BoardRenderService(this.config.render, { boardService });
+        this.boardRenderService = new BoardRenderService(this.config.render, { boardService: this.boardService });
 
-        const analysisService = new AnalysisService(this.config.analysis, { boardService });
+        this.analysisService = new AnalysisService(this.config.analysis, { boardService: this.boardService });
 
-        const controlsService = new ControlsService(this.actionsBridge);
+        this.controlsService = new ControlsService(this.actionsBridge);
 
-        boardRenderService.drawBoardFromSquareMap().then(
+        this.boardRenderService.drawBoardFromSquareMap().then(
             () => {
                 // todo:refactor -> create square controls
+                this.controlsService.squareControls()
             }
         )
     }
@@ -51,17 +52,61 @@ export default class Chess {
         };
     }
 
+    // Main methods
+
+    async chessMove(originSquare, targetSquare) {
+        await this.boardService.move(originSquare, targetSquare);
+        const currentFen = this.gameExportService.convertSquareMapToFenStr(this.boardService.getSquaresMap());
+        this.gameExportService.changeHistoryWithFen(currentFen);
+        this.boardRenderService.drawPiecesFromMap();
+        // todo:refactor
+        // this.drawPiecesFromMap();
+        // // COM: RePaint domains on move
+        // if (this.state.isDomainWhiteOn) {
+        //     this.drawDomainByColor(white);
+        // }
+        // if (this.state.isDomainBlackOn) {
+        //     this.drawDomainByColor(black);
+        // }
+    }
+
+    chessAddPiece(square, letter, color) {
+        if (!square) { return; }
+        this.boardService.setFigureInSquare(square, letter, color);
+        const currentFen = this.gameExportService.convertSquareMapToFenStr(this.boardService.getSquaresMap());
+        this.gameExportService.changeHistoryWithFen(currentFen);
+        this.boardRenderService.drawPiecesFromMap();
+    }
+
+    chessClearBoard() {
+        this.boardService.clear();
+        const currentFen = this.gameExportService.convertSquareMapToFenStr(this.boardService.getSquaresMap());
+        this.gameExportService.changeHistoryWithFen(currentFen);
+        this.boardRenderService.drawPiecesFromMap();
+    }
+    chessInitBoard() {
+        this.boardService.init();
+        const currentFen = this.gameExportService.convertSquareMapToFenStr(this.boardService.getSquaresMap());
+        this.gameExportService.changeHistoryWithFen(currentFen);
+        this.boardRenderService.drawPiecesFromMap();
+    }
+
     get actionsBridge() {
         return {
+            // Board
+            movePiecesFromSquares: (originSquare, targetSquare) => this.chessMove(originSquare, targetSquare),
+            onFlip: async() => {
+                await this.boardRenderService.drawBoardFlipped()
+            },
+            onAdd: (square, letter, color) => this.chessAddPiece(square, letter, color),
+            onClearSquare: (square) => this.chessAddPiece(square, null),
+            onClear: () => this.chessClearBoard(),
+            onInit: () => this.chessInitBoard(),
+            // Analyse
+            onDisplayReportBalanceWhites: () => {},
+            onDisplayReportBalanceBlacks: () => {},
             onShowSquareSupport: (squareTarget) => {},
             onShowSquareDomainSupport: (squareTarget) => {},
-            onFlip: () => {},
-            movePiecesFromSquares: async(originSquare, targetSquare) => {},
-            onAddMarker: (squareTarget, markerId) => {},
-            onAdd: (square, letter, color) => {},
-            onClearSquare: (square) => {},
-            onClear: () => {},
-            onInit: () => {},
             onDomainW: async() => {},
             onDomainB: async() => {},
             onDomainsToggle: async() => {},
@@ -70,17 +115,20 @@ export default class Chess {
             onDomainAttacksSquare: async(squareName) => {},
             onShowAttackSquare: async(squareName) => {},
             onDangerSquare: async(squareName) => {},
+            // Visuals
             onRemoveVisuals: () => {},
+            onAddMarker: (squareTarget, markerId) => {},
             onToggleMarkers: () => {},
+            // Imports, Extras
             onLoadFenFromInput: () => {},
             onLoadFenToInput: () => {},
             onCreateLink: () => {},
+            onLoadPgn: () => {},
+            // Navigation
+            onNavRecord: () => {},
             onNavPrev: () => {},
             onNavNext: () => {},
-            onNavRecord: () => {},
-            onLoadPgn: () => {},
-            onDisplayReportBalanceWhites: () => {},
-            onDisplayReportBalanceBlacks: () => {}
+
         }
     }
 }
