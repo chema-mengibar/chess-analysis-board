@@ -24,7 +24,9 @@ export default class Chess {
 
         this.boardRenderService = new BoardRenderService(this.config.render, { boardService: this.boardService });
 
-        this.analysisService = new AnalysisService(this.config.analysis, { boardService: this.boardService });
+        this.analysisService = new AnalysisService(this.config.analysis, {
+            boardService: this.boardService,
+        });
 
         this.controlsService = new ControlsService(this.actionsBridge);
 
@@ -32,8 +34,13 @@ export default class Chess {
             () => {
                 // todo:refactor -> create square controls
                 this.controlsService.squareControls()
+                this.lab()
             }
         )
+    }
+
+    lab() {
+        //this.actionsBridge.onDomainDangerSquare('e2');
     }
 
     parseConfig(config) {
@@ -93,6 +100,7 @@ export default class Chess {
 
     get actionsBridge() {
         return {
+
             // Board
             movePiecesFromSquares: (originSquare, targetSquare) => this.chessMove(originSquare, targetSquare),
             onFlip: async() => {
@@ -102,26 +110,58 @@ export default class Chess {
             onClearSquare: (square) => this.chessAddPiece(square, null),
             onClear: () => this.chessClearBoard(),
             onInit: () => this.chessInitBoard(),
+
             // Analyse
             onDisplayReportBalanceWhites: () => {},
             onDisplayReportBalanceBlacks: () => {},
             onShowSquareSupport: (squareTarget) => {},
             onShowSquareDomainSupport: (squareTarget) => {},
-            onDomainW: async() => {},
-            onDomainB: async() => {},
-            onDomainsToggle: async() => {},
-            onDomainsSquare: async(squareName) => {},
-            onDomainDangerSquare: async(squareName) => {},
-            onDomainAttacksSquare: async(squareName) => {},
-            onShowAttackSquare: async(squareName) => {},
-            onDangerSquare: async(squareName) => {},
+            onDomainW: async() => {
+                await this.analysisService.toggleColorDomain(white)
+            },
+            onDomainB: async() => {
+                await this.analysisService.toggleColorDomain(black)
+            },
+            onDomainsToggle: async() => {
+                await this.analysisService.toggleDomains()
+            },
+            onDomainsSquare: async(squareName) => {
+                this.analysisService.drawDomainBySquare(squareName);
+            },
+            onDomainDangerSquare: (squareName) => {
+                this.analysisService.drawDangerToSquareDomain(squareName);
+            },
+            onDomainAttacksSquare: async(squareName) => {
+                this.analysisService.drawAttackFromSquareDomain(squareName);
+            },
+            onShowAttackSquare: async(squareName) => {
+                this.analysisService.drawAttackFromSquare(squareName)
+            },
+            onDangerSquare: async(squareName) => {
+                this.analysisService.drawDangerToSquare(squareName)
+            },
+
             // Visuals
-            onRemoveVisuals: () => {},
+            onRemoveVisuals: () => {
+                this.analysisService.drawRemoveAllMarkers();
+                this.analysisService.drawClearDomains(white);
+                this.analysisService.drawClearDomains(black);
+            },
             onAddMarker: (squareTarget, markerId) => {},
             onToggleMarkers: () => {},
+
             // Imports, Extras
-            onLoadFenFromInput: () => {},
-            onLoadFenToInput: () => {},
+            onLoadFenFromInput: () => {
+                // todo: improve
+                const map = this.gameExportService.loadFenFromInput();
+                this.boardService.setMap(map);
+                this.boardRenderService.drawPiecesFromMap();
+            },
+            onLoadFenToInput: () => {
+                // todo: improve
+                const map = this.boardService.getSquaresMap();
+                this.gameExportService.loadFenToInput(map);
+            },
             onCreateLink: () => {},
             onLoadPgn: () => {},
             // Navigation

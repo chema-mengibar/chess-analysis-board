@@ -676,59 +676,59 @@ export default class Chess {
             //     this.movesRegistry.reset();
             //     this.movesRegistry.record(); // ref: recordMoveInRegistry
             // },
-            onDomainW: async() => {
-                if (!this.state.isDomainWhiteOn) {
-                    this.drawDomainByColor(white);
-                } else {
-                    this.drawClearDomains(white);
-                }
-            },
-            onDomainB: async() => {
-                if (!this.state.isDomainBlackOn) {
-                    this.drawDomainByColor(black);
-                } else {
-                    this.drawClearDomains(black);
-                }
-            },
-            onDomainsToggle: async() => {
-                if (this.state.isDomainWhiteOn || this.state.isDomainBlackOn) {
-                    this.drawClearDomains(white);
-                    this.drawClearDomains(black);
-                } else {
-                    this.drawDomainByColor(white);
-                    this.drawDomainByColor(black);
-                }
-            },
-            onDomainsSquare: async(squareName) => {
-                this.drawDomainBySquare(squareName);
-            },
-            onDomainDangerSquare: async(squareName) => {
-                this.drawDangerToSquareDomain(squareName);
-            },
-            onDomainAttacksSquare: async(squareName) => {
-                this.drawAttackFromSquareDomain(squareName);
-            },
-            onShowAttackSquare: async(squareName) => {
-                this.drawAttackFromSquare(squareName)
-            },
-            onDangerSquare: async(squareName) => {
-                this.drawDangerToSquare(squareName)
-            },
-            onRemoveVisuals: () => {
-                this.drawRemoveAllMarkers();
-                this.drawClearDomains(white);
-                this.drawClearDomains(black);
-            },
+            // onDomainW: async() => {
+            //     if (!this.state.isDomainWhiteOn) {
+            //         this.drawDomainByColor(white);
+            //     } else {
+            //         this.drawClearDomains(white);
+            //     }
+            // },
+            // onDomainB: async() => {
+            //     if (!this.state.isDomainBlackOn) {
+            //         this.drawDomainByColor(black);
+            //     } else {
+            //         this.drawClearDomains(black);
+            //     }
+            // },
+            // onDomainsToggle: async() => {
+            //     if (this.state.isDomainWhiteOn || this.state.isDomainBlackOn) {
+            //         this.drawClearDomains(white);
+            //         this.drawClearDomains(black);
+            //     } else {
+            //         this.drawDomainByColor(white);
+            //         this.drawDomainByColor(black);
+            //     }
+            // },
+            // onDomainsSquare: async(squareName) => {
+            //     this.drawDomainBySquare(squareName);
+            // },
+            // onDomainDangerSquare: async(squareName) => {
+            //     this.drawDangerToSquareDomain(squareName);
+            // },
+            // onDomainAttacksSquare: async(squareName) => {
+            //     this.drawAttackFromSquareDomain(squareName);
+            // },
+            // onShowAttackSquare: async(squareName) => {
+            //     this.drawAttackFromSquare(squareName)
+            // },
+            // onDangerSquare: async(squareName) => {
+            //     this.drawDangerToSquare(squareName)
+            // },
+            // onRemoveVisuals: () => {
+            //     this.drawRemoveAllMarkers();
+            //     this.drawClearDomains(white);
+            //     this.drawClearDomains(black);
+            // },
             onToggleMarkers: () => {
                 Svg.toggleShowMarkersContainer();
 
             },
-            onLoadFenFromInput: () => {
-                this.loadFenFromInput();
-            },
-            onLoadFenToInput: () => {
-                this.loadFenToInput();
-            },
+            // onLoadFenFromInput: () => {
+            //     this.loadFenFromInput();
+            // },
+            // onLoadFenToInput: () => {
+            //     this.loadFenToInput();
+            // },
             onCreateLink: () => {
                 const currentFen = Utils.parseMapToFenStr(this.squaresMap);
                 const linkHref = Utils.getAbsoluteRouteWithFen(currentFen);

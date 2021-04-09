@@ -34,6 +34,15 @@ export default class BoardService {
         this.movesReset()
     }
 
+
+
+    setMap(map) {
+        // todo: improve
+        this._squaresMap = map;
+    }
+
+
+
     updateSquareMapFromMove(move) {
         this._squaresMap = this.gameExportService.fenToMap(move.fen);
         this.gameExportService.changeHistoryWithFen(move.fen)

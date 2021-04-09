@@ -1,16 +1,37 @@
-import { white } from '../../utils/chess.constants.js';
+import { white, black } from '../../utils/chess.constants.js';
 import AnalysisSvgUtils from './analysis-svg.utils.js'
 import AnalysisSquaresUtils from './analysis-squares.utils.js'
 
 export default class AnalysisService {
 
-    constructor(services) {
+    constructor(config, services) {
         this.markersMap = AnalysisSvgUtils.createMarkersMap();
         this.boardService = services.boardService;
+
+        this.config = config;
 
         this.state = {
             isDomainWhiteOn: false,
             isDomainBlackOn: false,
+        }
+    }
+
+    toggleColorDomain(color = white) {
+        const colorFlagState = color ? this.state.isDomainWhiteOn : this.state.isDomainBlackOn;
+        if (!colorFlagState) {
+            this.drawDomainByColor(color);
+        } else {
+            this.drawClearDomains(color);
+        }
+    }
+
+    toggleDomains() {
+        if (this.state.isDomainWhiteOn || this.state.isDomainBlackOn) {
+            this.drawClearDomains(white);
+            this.drawClearDomains(black);
+        } else {
+            this.drawDomainByColor(white);
+            this.drawDomainByColor(black);
         }
     }
 
@@ -171,7 +192,7 @@ export default class AnalysisService {
         const squarePiece = squaresMap.get(squareName);
         if (squarePiece) {
             const squaresOptionsFromFigure = this.getSquarePieceAllowedSquares(squareName);
-            squaresOptionsFromFigure.forEach(domainSquareName => {
+            squaresOptionsFromFigure.forEach(() => {
                 this.drawDomainBySquare(squareName);
                 squaresMap.forEach((squareMapValue, squareMapKey) => {
                     if (squareMapKey !== squareName && squareMapValue && squareMapValue.color !== squarePiece.color) {
@@ -332,6 +353,8 @@ export default class AnalysisService {
     }
 
     drawClearDomains(color = white) {
+
+
         const squaresMap = this.boardService.getSquaresMap();
         if (color) {
             this.state.isDomainWhiteOn = false;
