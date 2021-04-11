@@ -1,6 +1,6 @@
 <?php
 
-$versionFolder =  './v1';
+$versionFolder =  './v2';
 
 header("Location:  $versionFolder ");
 
