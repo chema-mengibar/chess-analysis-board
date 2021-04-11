@@ -1,20 +1,20 @@
 import Chess from './js/chess.js'
-// import Url from './js/utils/url.js'
+import UrlUtils from './js/utils/url.js'
 import './index.scss';
 
-// const urlParams = Url.getParamsFromUrl(window.location.href);
+const urlParams = UrlUtils.getParamsFromUrl(window.location.href);
 
-// let fenToLoad = null;
-// if ('fen' in urlParams) {
-//     fenToLoad = urlParams.fen;
-// }
+let fenToLoad = null;
+if ('fen' in urlParams) {
+    fenToLoad = urlParams.fen;
+}
 
-const configA = {
-    // fen: '',
+const config = {
+    fen: fenToLoad,
     asIcon: true,
-    asLines: true,
+    // asLines: false, // todo: check param
     withLimitation: true,
     flip: false
 };
 
-const chess = new Chess(configA);
+new Chess(config);

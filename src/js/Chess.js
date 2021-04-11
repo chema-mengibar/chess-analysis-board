@@ -1,4 +1,4 @@
-import { rows, cols, fenBase, white, black, figures, flankC } from './utils/chess.constants.js';
+import { fenBase, white, black } from './utils/chess.constants.js';
 
 import ControlsService from './services/controls-service/controls.service.js'
 import BoardService from './services/board-service/board.service.js';
@@ -6,11 +6,6 @@ import BoardRenderService from './services/board-render-service/board-render.ser
 import GameExportService from './services/game-export-service/game-export.service.js';
 import AnalysisService from './services/analysis-service/analysis.service.js';
 
-// [] todo: refactor -> reassign controls on flip
-// [] todo: refactor -> onload  fen from input fiel in CONTROLS, call RENDER this.drawPiecesFromMap();
-// [] todo: refactor -> controls gameExport.loadFenToInput();
-// [] todo: refactor -> controls next & prev draw pieces ;
-// [] todo: refactor -> initial record board 
 
 export default class Chess {
 
@@ -18,9 +13,7 @@ export default class Chess {
 
         this.config = this.parseConfig(config);
 
-        this.gameExportService = new GameExportService(null);
-
-        this.boardService = new BoardService(this.config.board, { gameExportService: this.gameExportService });
+        this.boardService = new BoardService(this.config.board);
 
         this.boardRenderService = new BoardRenderService(this.config.render, { boardService: this.boardService });
 
@@ -28,13 +21,17 @@ export default class Chess {
             boardService: this.boardService,
         });
 
+        this.gameExportService = new GameExportService(null, {
+            boardService: this.boardService,
+            analysisService: this.analysisService
+        });
+
         this.controlsService = new ControlsService(this.actionsBridge);
 
         this.boardRenderService.drawBoardFromSquareMap().then(
             () => {
-                // todo:refactor -> create square controls
-                this.controlsService.squareControls()
-                this.lab()
+                this.controlsService.squareControls();
+                this.lab();
             }
         )
     }
@@ -63,38 +60,22 @@ export default class Chess {
 
     async chessMove(originSquare, targetSquare) {
         await this.boardService.move(originSquare, targetSquare);
-        const currentFen = this.gameExportService.convertSquareMapToFenStr(this.boardService.getSquaresMap());
-        this.gameExportService.changeHistoryWithFen(currentFen);
         this.boardRenderService.drawPiecesFromMap();
-        // todo:refactor
-        // this.drawPiecesFromMap();
-        // // COM: RePaint domains on move
-        // if (this.state.isDomainWhiteOn) {
-        //     this.drawDomainByColor(white);
-        // }
-        // if (this.state.isDomainBlackOn) {
-        //     this.drawDomainByColor(black);
-        // }
+        this.analysisService.drawDomainsByState();
     }
 
     chessAddPiece(square, letter, color) {
         if (!square) { return; }
         this.boardService.setFigureInSquare(square, letter, color);
-        const currentFen = this.gameExportService.convertSquareMapToFenStr(this.boardService.getSquaresMap());
-        this.gameExportService.changeHistoryWithFen(currentFen);
         this.boardRenderService.drawPiecesFromMap();
     }
 
     chessClearBoard() {
         this.boardService.clear();
-        const currentFen = this.gameExportService.convertSquareMapToFenStr(this.boardService.getSquaresMap());
-        this.gameExportService.changeHistoryWithFen(currentFen);
         this.boardRenderService.drawPiecesFromMap();
     }
     chessInitBoard() {
         this.boardService.init();
-        const currentFen = this.gameExportService.convertSquareMapToFenStr(this.boardService.getSquaresMap());
-        this.gameExportService.changeHistoryWithFen(currentFen);
         this.boardRenderService.drawPiecesFromMap();
     }
 
@@ -104,7 +85,9 @@ export default class Chess {
             // Board
             movePiecesFromSquares: (originSquare, targetSquare) => this.chessMove(originSquare, targetSquare),
             onFlip: async() => {
-                await this.boardRenderService.drawBoardFlipped()
+                await this.boardRenderService.drawBoardFlipped();
+                this.controlsService.squareControls();
+                this.lab();
             },
             onAdd: (square, letter, color) => this.chessAddPiece(square, letter, color),
             onClearSquare: (square) => this.chessAddPiece(square, null),
@@ -112,10 +95,18 @@ export default class Chess {
             onInit: () => this.chessInitBoard(),
 
             // Analyse
-            onDisplayReportBalanceWhites: () => {},
-            onDisplayReportBalanceBlacks: () => {},
-            onShowSquareSupport: (squareTarget) => {},
-            onShowSquareDomainSupport: (squareTarget) => {},
+            onDisplayReportBalanceWhites: () => {
+                this.analysisService.boardSquareDangerSupportRepor(white);
+            },
+            onDisplayReportBalanceBlacks: () => {
+                this.analysisService.boardSquareDangerSupportRepor(black);
+            },
+            onShowSquareSupport: (squareTarget) => {
+                this.analysisService.drawSupportToSquare(squareTarget);
+            },
+            onShowSquareDomainSupport: (squareTarget) => {
+                this.analysisService.drawSupportToSquareDomain(squareTarget);
+            },
             onDomainW: async() => {
                 await this.analysisService.toggleColorDomain(white)
             },
@@ -147,27 +138,43 @@ export default class Chess {
                 this.analysisService.drawClearDomains(white);
                 this.analysisService.drawClearDomains(black);
             },
-            onAddMarker: (squareTarget, markerId) => {},
-            onToggleMarkers: () => {},
+            onAddMarker: (squareTarget, markerId) => {
+                this.analysisService.addMarkerToSquare(squareTarget, markerId, true);
+            },
+            onToggleMarkers: () => {
+                this.analysisService.toggleMarkers();
+            },
 
             // Imports, Extras
             onLoadFenFromInput: () => {
-                // todo: improve
-                const map = this.gameExportService.loadFenFromInput();
-                this.boardService.setMap(map);
+                this.gameExportService.loadFenFromInput();
                 this.boardRenderService.drawPiecesFromMap();
             },
             onLoadFenToInput: () => {
-                // todo: improve
-                const map = this.boardService.getSquaresMap();
-                this.gameExportService.loadFenToInput(map);
+                this.gameExportService.loadFenToInput();
             },
-            onCreateLink: () => {},
-            onLoadPgn: () => {},
+            onCreateLink: () => {
+                this.gameExportService.createBoardLink();
+            },
+            onLoadPgn: () => {
+                this.gameExportService.loadPgnFromInput();
+                this.boardRenderService.drawPiecesFromMap();
+            },
             // Navigation
-            onNavRecord: () => {},
-            onNavPrev: () => {},
-            onNavNext: () => {},
+            onNavRecord: () => {
+                this.boardService.moveSave();
+            },
+            onNavPrev: () => {
+                this.boardService.movePrev();
+                this.boardRenderService.drawPiecesFromMap();
+                this.analysisService.drawDomainsByState();
+            },
+            onNavNext: () => {
+                this.boardService.moveNext();
+                this.boardRenderService.drawPiecesFromMap();
+                this.analysisService.drawDomainsByState();
+
+            },
 
         }
     }

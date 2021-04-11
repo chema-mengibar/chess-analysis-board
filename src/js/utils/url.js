@@ -14,6 +14,13 @@ function getParamsFromUrl(url) {
     return params;
 };
 
+
+function getAbsoluteRouteWithFen(fen) {
+    const fenQuery = fen ? `?fen=${fen}` : '';
+    return `${window.location.origin}${window.location.pathname}${fenQuery}`;
+}
+
 export default {
-    getParamsFromUrl
+    getParamsFromUrl,
+    getAbsoluteRouteWithFen
 }

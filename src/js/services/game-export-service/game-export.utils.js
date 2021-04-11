@@ -1,5 +1,21 @@
 import { white } from '../../utils/chess.constants.js';
 
+function addTextToClipboard(text) {
+    try {
+        let myTemporaryInputElement = document.createElement('input');
+        myTemporaryInputElement.type = 'text';
+        myTemporaryInputElement.value = text;
+        document.body.appendChild(myTemporaryInputElement);
+        myTemporaryInputElement.select();
+        document.execCommand('Copy');
+        document.body.removeChild(myTemporaryInputElement);
+
+    } catch (e) {
+        console.error('[Clipboard] addTextToClipboard:', e);
+    }
+}
+
+
 function parsePgn(pgnStr) {
     let m;
     const regex = /([0-9]{1,2}\.)\s?([\S]+) ([\S]+)/gm;
@@ -156,5 +172,6 @@ function parsePgnNotation(pgnMove, color = white) {
 
 export default {
     parsePgn,
-    parsePgnNotation
+    parsePgnNotation,
+    addTextToClipboard
 }

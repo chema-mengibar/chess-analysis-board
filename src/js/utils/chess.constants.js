@@ -1,5 +1,7 @@
 import Figure from './Figure.js'
 
+export const boardSize = 90; //todo:refactor -> pieces size
+
 export const rows = [8, 7, 6, 5, 4, 3, 2, 1];
 export const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 

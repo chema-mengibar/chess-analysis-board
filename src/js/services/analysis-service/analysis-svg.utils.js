@@ -1,4 +1,4 @@
-import { rows, cols, white } from '../../utils/chess.constants.js';
+import { rows, cols, white, boardSize } from '../../utils/chess.constants.js';
 import SquareUtils from '../../utils/square.utils.js';
 
 function mapNotationColorType(
@@ -50,6 +50,16 @@ function toggleShowMarkersContainer() {
     });
 }
 
+function forceShowMarkers() {
+    const markersItems = document.querySelectorAll('.markers');
+    const invisibleClassName = 'marker-invisible';
+    markersItems.forEach(markerItem => {
+        if (markerItem.classList.contains(invisibleClassName)) {
+            markerItem.classList.remove(invisibleClassName);
+        }
+    });
+}
+
 function getMarkerCircleIdByColor(color) {
     return color ? 'marker-circle-white' : 'marker-circle-black';
 }
@@ -59,6 +69,9 @@ function getDomainClassNameByColor(color) {
 }
 
 function addMarkerNotation(squareName, text, type = 'default') {
+
+    const div = boardSize / 8;
+
     const textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
     const textNode = document.createTextNode(text);
     textEl.setAttribute('x', `${div}%`);
@@ -161,5 +174,6 @@ export default {
     drawMarkerInSquare,
     removeSquareMarkers,
     createMarkersMap,
-    addMarkerMoveLast
+    addMarkerMoveLast,
+    forceShowMarkers
 }

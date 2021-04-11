@@ -1,12 +1,11 @@
 import SquareUtils from '../../utils/square.utils.js';
+import ServiceUtils from './board-service.utils.js';
+
 import { rows, cols, white, fenBase } from '../../utils/chess.constants.js';
 
 export default class BoardService {
 
-    constructor(config = null, services) {
-
-        this.gameExportService = services.gameExportService;
-
+    constructor(config = null) {
         this.moves = [];
         this.moveIdx = 0;
 
@@ -19,14 +18,12 @@ export default class BoardService {
         } else {
             this.createSquaresMap(rows, cols);
         }
-
-
-
     }
 
     init(fen = fenBase) {
-        this._squaresMap = this.gameExportService.fenToMap(fen);
+        this.setFenToSquareMap(fen)
         this.movesReset()
+        this.moveSave()
     }
 
     clear() {
@@ -35,30 +32,7 @@ export default class BoardService {
     }
 
 
-
-    setMap(map) {
-        // todo: improve
-        this._squaresMap = map;
-    }
-
-
-
-    updateSquareMapFromMove(move) {
-        this._squaresMap = this.gameExportService.fenToMap(move.fen);
-        this.gameExportService.changeHistoryWithFen(move.fen)
-    }
-
-
-    getSquaresMap() {
-        return this._squaresMap;
-    }
-
-    setMoveState(originSquare, targetSquare) {
-        this.state.move = {
-            from: originSquare,
-            to: targetSquare,
-        };
-    }
+    // Square Map 
 
     createSquaresMap(rows, cols) {
         const listSquares = [];
@@ -71,21 +45,48 @@ export default class BoardService {
         this._squaresMap = new Map(listSquares);
     }
 
+    getSquareMapAsFen() {
+        return ServiceUtils.convertSquareMapToFenStr(this.getSquaresMap());
+    }
+
+    setFenToSquareMap(fen) {
+        const resultMap = ServiceUtils.fenToMap(fen)
+        this.setSquaresMap(resultMap);
+    }
+
+    getSquaresMap() {
+        return this._squaresMap;
+    }
+
+    setSquaresMap(map) {
+        this._squaresMap = map;
+    }
+
+
+    // Moves State 
+
+    setMoveState(originSquare, targetSquare) {
+        this.state.move = {
+            from: originSquare,
+            to: targetSquare,
+        };
+    }
+
     setFigureInSquare(squareName, letter, color = white) {
         this._squaresMap.set(squareName, SquareUtils.asMapSquare(letter, color));
     }
 
     async move(originSquare, targetSquare) {
-
         const originPiece = this._squaresMap.get(originSquare);
         if (originPiece) {
             this.setFigureInSquare(targetSquare, originPiece.letter, originPiece.color);
             this.setFigureInSquare(originSquare, null);
             this.setMoveState(originSquare, targetSquare);
-
             return true;
         }
     }
+
+    // Moves Registry
 
     movesReset() {
         this.moveIdx = 0;
@@ -99,11 +100,10 @@ export default class BoardService {
         const squareFrom = this.state.move ? this.state.move.from : null;
         const squareTo = this.state.move ? this.state.move.to : null;
 
-        const fen = this.gameExportService.convertSquareMapToFenStr(this._squaresMap);
         const moveEntry = {
             from: squareFrom,
             to: squareTo,
-            fen: fen
+            fen: this.getSquareMapAsFen()
         }
 
         const currentCursor = this.moveIdx;
@@ -123,22 +123,32 @@ export default class BoardService {
         return this.moves[this.moveIdx];
     }
 
-    get movePrev() {
-        let cursor = this.moveIdx - 1;
-        if (cursor <= 0) {
-            cursor = 0;
-        }
-        this.moveIdx = cursor;
-        return this.moves[cursor];
-    }
-
-    get moveNext() {
+    moveNext() {
         let cursor = this.moveIdx + 1;
         if (cursor >= this.moves.length) {
             cursor = this.moves.length - 1;
         }
         this.moveIdx = cursor;
-        return this.moves[cursor];
+        const move = this.moves[cursor];
+        if (!move) {
+            return;
+        }
+
+        this.setFenToSquareMap(move.fen);
+    }
+
+    movePrev() {
+        let cursor = this.moveIdx - 1;
+        if (cursor <= 0) {
+            cursor = 0;
+        }
+        this.moveIdx = cursor;
+        const move = this.moves[cursor];
+        if (!move) {
+            return;
+        }
+
+        this.setFenToSquareMap(move.fen);
     }
 
     getMoveByIdx(moveIdx) {
@@ -148,9 +158,11 @@ export default class BoardService {
         return null;
     }
 
-    movesGoTo(gameMoveIdx = 1, color = white) {
-        const cursor = (gameMoveIdx * 2) - (color ? 2 : 1) + 1; // +1, fix, because the initial position counts like a move
-        this.moveIdx = cursor;
-        return this.moves[cursor];
-    }
+    // todo:feature
+    // movesGoTo(gameMoveIdx = 1, color = white) {
+    //     const cursor = (gameMoveIdx * 2) - (color ? 2 : 1) + 1; // +1, fix, because the initial position counts like a move
+    //     this.moveIdx = cursor;
+    //     return this.moves[cursor];
+    // }
+
 }

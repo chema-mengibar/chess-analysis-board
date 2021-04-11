@@ -2,6 +2,11 @@ import { white, black } from '../../utils/chess.constants.js';
 import AnalysisSvgUtils from './analysis-svg.utils.js'
 import AnalysisSquaresUtils from './analysis-squares.utils.js'
 
+// todo
+// export const flankQ = ['a', 'b', 'c', 'd', ];
+// export const flankK = ['e', 'f', 'g', 'h', ];
+// export const flankC = ['c', 'd', 'e', 'f'];
+
 export default class AnalysisService {
 
     constructor(config, services) {
@@ -14,6 +19,10 @@ export default class AnalysisService {
             isDomainWhiteOn: false,
             isDomainBlackOn: false,
         }
+    }
+
+    toggleMarkers() {
+        AnalysisSvgUtils.toggleShowMarkersContainer();
     }
 
     toggleColorDomain(color = white) {
@@ -35,10 +44,21 @@ export default class AnalysisService {
         }
     }
 
+
+    drawDomainsByState() {
+        if (this.state.isDomainWhiteOn) {
+            this.drawDomainByColor(white);
+        }
+        if (this.state.isDomainBlackOn) {
+            this.drawDomainByColor(black);
+        }
+    }
+
     addMarkerToSquare(squareName, markerId, forceRemove = false) {
         if (!squareName) {
             return
         }
+        AnalysisSvgUtils.forceShowMarkers();
         const squareMarkers = this.markersMap.get(squareName);
 
         const selectedMarkerIdInSquare = squareMarkers.indexOf(markerId);
@@ -55,6 +75,8 @@ export default class AnalysisService {
     }
 
     drawMarkersFromMap() {
+        AnalysisSvgUtils.forceShowMarkers();
+
         this.markersMap.forEach((markerEntry, squareKey) => {
             AnalysisSvgUtils.removeSquareMarkers(squareKey);
             markerEntry.forEach(markerItemId => {
@@ -64,6 +86,8 @@ export default class AnalysisService {
     }
 
     drawMarkersFromMapBySquareName(squareName) {
+        AnalysisSvgUtils.forceShowMarkers();
+
         //remove all markers first
         AnalysisSvgUtils.removeSquareMarkers(squareName);
         // Redraw markers from map
@@ -120,6 +144,10 @@ export default class AnalysisService {
     }
 
     boardSquareDangerSupportRepor(selfColor = white) {
+        AnalysisSvgUtils.forceShowMarkers();
+
+        this.drawRemoveAllMarkers();
+
         const squaresMap = this.boardService.getSquaresMap();
         squaresMap.forEach((squareMapValueA, squareMapKeyA) => {
             let countSupport = 0;
@@ -159,6 +187,8 @@ export default class AnalysisService {
         if (!squareName) {
             return;
         }
+        AnalysisSvgUtils.forceShowMarkers();
+
         const squaresMap = this.boardService.getSquaresMap();
         let isSquareSupported = false;
         const squarePiece = squaresMap.get(squareName);
@@ -169,7 +199,7 @@ export default class AnalysisService {
                     // console.debug('[CHESS] drawSupportToSquare: mapOptions', squareMapSquareOptions);
                     if (squareMapSquareOptions.includes(squareName)) {
                         isSquareSupported = true;
-                        const markerIdByColor = Svg.getMarkerCircleIdByColor(squareMapValue.color);
+                        const markerIdByColor = AnalysisSvgUtils.getMarkerCircleIdByColor(squareMapValue.color);
                         this.addMarkerToSquare(squareMapKey, markerIdByColor)
                         this.drawDomainBySquare(squareMapKey);
                     }
@@ -187,6 +217,8 @@ export default class AnalysisService {
         if (!squareName) {
             return;
         }
+        AnalysisSvgUtils.forceShowMarkers();
+
         const squaresMap = this.boardService.getSquaresMap();
         let isSquareSave = true;
         const squarePiece = squaresMap.get(squareName);
@@ -202,7 +234,7 @@ export default class AnalysisService {
 
                         const uniques = squaresOptionsFromFigure.filter(value => squareMapSquareOptions.includes(value));
                         uniques.forEach((commonSquare) => {
-                            const markerIdByColor = Svg.getMarkerCircleIdByColor(squareMapValue.color);
+                            const markerIdByColor = AnalysisSvgUtils.getMarkerCircleIdByColor(squareMapValue.color);
                             this.addMarkerToSquare(squareMapKey, markerIdByColor);
                             this.addMarkerToSquare(commonSquare, markerIdByColor);
 
@@ -226,6 +258,8 @@ export default class AnalysisService {
         if (!squareName) {
             return;
         }
+        AnalysisSvgUtils.forceShowMarkers();
+
         const squaresMap = this.boardService.getSquaresMap();
         let isSquareSave = true;
         const squarePiece = squaresMap.get(squareName);
@@ -255,6 +289,8 @@ export default class AnalysisService {
         if (!squareName) {
             return;
         }
+        AnalysisSvgUtils.forceShowMarkers();
+
         const squaresMap = this.boardService.getSquaresMap();
         const squarePiece = squaresMap.get(squareName);
         if (squarePiece) {
@@ -281,6 +317,8 @@ export default class AnalysisService {
         if (!squareName) {
             return;
         }
+        AnalysisSvgUtils.forceShowMarkers();
+
         const squaresMap = this.boardService.getSquaresMap();
         let isSquareSupported = false;
         const squarePiece = squaresMap.get(squareName);
@@ -353,8 +391,6 @@ export default class AnalysisService {
     }
 
     drawClearDomains(color = white) {
-
-
         const squaresMap = this.boardService.getSquaresMap();
         if (color) {
             this.state.isDomainWhiteOn = false;
@@ -373,6 +409,8 @@ export default class AnalysisService {
         if (!squareName) {
             return;
         }
+        AnalysisSvgUtils.forceShowMarkers();
+
         const squaresMap = this.boardService.getSquaresMap();
         const squarePiece = squaresMap.get(squareName);
         if (squarePiece) {
@@ -387,5 +425,27 @@ export default class AnalysisService {
             })
         }
     }
+
+
+    //todo 
+    // drawFlankCenterDomains() {
+    //     const targetRows = [6, 5, 4, 3];
+    //     const classNameDomain = 'with-flank';
+    //     flankC.forEach(flankCColLetter => {
+    //         targetRows.forEach(row => {
+    //             const squareName = Utils.getCellKey(flankCColLetter, row);
+    //             document.getElementById(`base-${squareName}`).classList.add(classNameDomain);
+    //         })
+    //     })
+    // }
+    // drawRemoveLastStepMoveMarker() {
+    //     this.markersMap.forEach(markerItemList => {
+    //         const markerIdx = markerItemList.indexOf('marker-move-last');
+    //         if (markerIdx > -1) {
+    //             markerItemList.splice(markerIdx, 1);
+    //         }
+    //     })
+    //     this.drawMarkersFromMap();
+    // }
 
 }

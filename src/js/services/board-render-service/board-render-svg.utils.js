@@ -1,5 +1,5 @@
 import SquareUtils from '../../utils/square.utils.js';
-import { white } from '../../utils/chess.constants.js';
+import { white, boardSize } from '../../utils/chess.constants.js';
 
 function createSquare(squareLetter, colIdx, rowInt, rowIdx, config) {
 
@@ -11,9 +11,16 @@ function createSquare(squareLetter, colIdx, rowInt, rowIdx, config) {
     const x = div * colIdx;
     const y = div * rowIdx;
 
-    const xT = asIcon ? 1.5 : 4;
-    const yT = asIcon ? -1.5 : 8;
-    const dyT = asIcon ? 10 : 0;
+    let xT = 0;
+    const yT = 0;
+
+    let fontSize = (boardSize / 8) * 0.6;
+    if (asIcon) {
+        fontSize = (boardSize / 8) * 0.8;
+    }
+
+    const dyT = asIcon ? div / 1.2 : div / 1.5;
+    const dxT = div / 2; // asIcon ? 0 : 0;
 
     const content = `
       <title>${squareName}</title>
@@ -32,10 +39,12 @@ function createSquare(squareLetter, colIdx, rowInt, rowIdx, config) {
       <text id="piece-${squareName}" 
           data-square="${squareName}"
           class="piece ${ asIcon ? 'asIcon' : ''}" 
-          text-anchor="start" 
+          text-anchor="middle" 
           x="${xT}" 
           y="${yT}" 
           dy="${dyT}"
+          dx="${dxT}"
+          font-size="${fontSize}"
        ></text>
   `;
 

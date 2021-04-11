@@ -1,24 +1,27 @@
-import { rows, cols, white, figures } from '../../utils/chess.constants.js';
+import { rows, cols, boardSize, figures } from '../../utils/chess.constants.js';
 import SvgBoardUtils from './board-render-svg.utils.js';
+import UrlUtils from '../../utils/url.js';
 
-
-export default class BoardService {
+export default class BoardRenderService {
 
     constructor(config, services) {
-
-        const _boardSize = 90; //todo:refactor -> pieces size
 
         this.config = {
             flip: config.flip,
             asIcon: config.asIcon,
             svg: {
-                boardSize: _boardSize,
-                div: _boardSize / 8
+                div: boardSize / 8
             }
         }
 
         this.boardService = services.boardService;
+    }
 
+    changeHistoryWithFen(fen) {
+        const url = UrlUtils.getAbsoluteRouteWithFen(fen);
+        history.pushState({
+            id: 'game-render'
+        }, '', url);
     }
 
     getRows() {
@@ -119,7 +122,12 @@ export default class BoardService {
                 SvgBoardUtils.setPieceInSquare(squareKey)
             }
         })
+
+        const currentFen = this.boardService.getSquareMapAsFen();
+        this.changeHistoryWithFen(currentFen);
     }
+
+
 
 
 }
