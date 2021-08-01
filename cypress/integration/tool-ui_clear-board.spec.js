@@ -1,17 +1,15 @@
 import { getUnicodePiece } from './shared/pieces'
 
-describe('Button Init-board', () => {
+const testPrefix = 'ui-button_reset-board'
 
-    const buttonSelector = '#button-init'
+describe('Button clear board', () => {
+
+    const buttonSelector = '#button-clear'
 
     let targetRect;
 
     before(() => {
-        cy.visit('/', {
-            headers: {
-                'user-agent': 'Mozilla/5.0 (Linux; Android 9; SM-G950F Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.157 Mobile Safari/537.36'
-            }
-        })
+        cy.visit('/v2/?fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
     })
 
     beforeEach(() => {
@@ -24,38 +22,20 @@ describe('Button Init-board', () => {
         cy.get(buttonSelector).then($button => {
             $button.css('outline', '3px dotted #02f513')
             $button.css('outline-offset', '5px')
+            $button.css('z-index', '99999')
         });
 
 
-        cy.screenshot('ui-button_init-button');
+        cy.screenshot(`${testPrefix}_button`);
 
         cy.get('.chess-board').then($el => {
             targetRect = $el[0].getBoundingClientRect()
-            cy.log(JSON.stringify(targetRect))
+                // cy.log(JSON.stringify(targetRect))
         })
     })
 
     it('board caption 0', () => {
-        cy.screenshot('ui-button_init-board_empty', {
-            clip: {
-                x: targetRect.x,
-                y: targetRect.y,
-                width: targetRect.width,
-                height: targetRect.height
-            }
-        })
-    })
-
-    it(`should show an empty board`, () => {
-        cy.get('#piece-a8').should('have.text', '');
-    })
-
-    it(`should reset the board`, () => {
-        cy.get(buttonSelector).click({ scrollBehavior: false });
-    })
-
-    it('board caption full-pieces', () => {
-        cy.screenshot('ui-button_init-board_with-pieces', {
+        cy.screenshot(`${testPrefix}_0-loaded`, {
             clip: {
                 x: targetRect.x,
                 y: targetRect.y,
@@ -69,8 +49,27 @@ describe('Button Init-board', () => {
         cy.get('#piece-a8').should('have.text', getUnicodePiece('r'));
     })
 
-    it(`should have "a7" square white black pawn`, () => {
-        cy.get('#piece-a7').should('have.text', getUnicodePiece('p'));
+
+
+    it(`should reset the board`, () => {
+        cy.get(buttonSelector).click({ scrollBehavior: false });
+    })
+
+    it('board caption board-clear', () => {
+        cy.screenshot(`${testPrefix}_1-cleared`, {
+            clip: {
+                x: targetRect.x,
+                y: targetRect.y,
+                width: targetRect.width,
+                height: targetRect.height
+            }
+        })
+    })
+
+
+
+    it(`should show an empty board`, () => {
+        cy.get('#piece-a8').should('have.text', '');
     })
 
 
