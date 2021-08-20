@@ -1,4 +1,5 @@
 {
     "baseUrl": "http://motuo.info/chess",
-    "video": false
+    "video": false,
+    "testFiles": ["**/*.spec.js"]
 }

@@ -1,0 +1,42 @@
+## FEATURES
+
+### Overview
+- Game
+  - Record []
+  - Previous []
+  - Next []
+- Visualization analyse
+  - Square support [x]
+  - Square danger [x]
+  - Square attack []
+  - Piece domain []
+  - Piece domain attack []
+  - Piece domain danger []
+  - Piece domain support []
+  - Domain toggle []
+  - Domain white []
+  - Domain black []
+  - Report balance white []
+  - Report balance black []
+  - Toggle visuals []
+  - Flank center (to do) []
+  - Flank king (to do) []
+  - Flank queen (to do) []
+-  Markers
+   - Circle white []
+   - Circle black []
+   - Circle neutral []
+   - Dot ( last move) []
+   - Square green []
+   - Square red []
+- Pieces
+  - add/remove []
+  - clear selected square []
+- Board
+  - Flip [x]
+  - Clear [x]
+  - Reset [x]
+  - Fen to board [x]
+  - Board to fen []
+  - Copy Link []
+  - Pgn to board []

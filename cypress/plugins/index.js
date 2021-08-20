@@ -25,3 +25,15 @@ module.exports = (on, config) => {
         browsers: config.browsers.filter((b) => b.family === 'chromium'),
     }
 }
+
+
+// https://docs.cypress.io/api/plugins/writing-a-plugin#List-of-events
+
+// const del = require('del')
+// module.exports = (on, config) => {
+//     on('before:spec', (spec, results) => {
+//         // https://docs.cypress.io/api/plugins/before-spec-api#Syntax
+//         console.log('>>>>>>>>>>>>>> Running', spec.relative)
+//         del('cypress/screenshots/a')
+//     })
+// }
