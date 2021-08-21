@@ -1,3 +1,6 @@
+const fs = require('fs');
+const del = require('del')
+
 /// <reference types="cypress" />
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
@@ -29,11 +32,27 @@ module.exports = (on, config) => {
 
 // https://docs.cypress.io/api/plugins/writing-a-plugin#List-of-events
 
-// const del = require('del')
-// module.exports = (on, config) => {
-//     on('before:spec', (spec, results) => {
-//         // https://docs.cypress.io/api/plugins/before-spec-api#Syntax
-//         console.log('>>>>>>>>>>>>>> Running', spec.relative)
-//         del('cypress/screenshots/a')
-//     })
-// }
+
+module.exports = (on, config) => {
+    on('after:screenshot', (details) => {
+
+        const pathImg = details.path.split('cypress\\screenshots\\')[1].replace(/\\/g, '/')
+
+        // const line = `![${details.name}](./docs/readme-assets/features-captures/${pathImg})` + "\n"
+        const line = `<img src="./docs/readme-assets/features-captures/${pathImg}" alt="${details.name}" width="200"/>` + "\n"
+
+        fs.appendFile('cypress/screenshots/screenshots.log', line, function(err) {
+            if (err) throw err;
+        });
+
+    })
+
+
+    on('after:spec', (spec, results) => {
+        const line = "\n"
+        fs.appendFile('cypress/screenshots/screenshots.log', line, function(err) {
+            if (err) throw err;
+        });
+
+    })
+}

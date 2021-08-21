@@ -19,19 +19,16 @@ describe('Button flip board', () => {
 
     it('should scroll to button, mark and take screenshot', () => {
         cy.get(buttonSelector).scrollIntoView({ timeout: 200, offset: { top: -100, left: 0 } });
-        cy.get(buttonSelector).then($button => {
-            $button.css('outline', '3px dotted #02f513')
-            $button.css('outline-offset', '5px')
-            $button.css('z-index', '99999')
-        });
-
-
+        cy.accentElement(buttonSelector);
         cy.screenshot(`${testPrefix}_button`);
-
         cy.get('.chess-board').then($el => {
             targetRect = $el[0].getBoundingClientRect()
-                // cy.log(JSON.stringify(targetRect))
         })
+    })
+
+
+    it('button caption', () => {
+        cy.captureButton(buttonSelector, testPrefix)
     })
 
     it('board caption 0', () => {
@@ -77,16 +74,11 @@ describe('Button flip board', () => {
         cy.get('#piece-a8').should('have.text', getUnicodePiece('r'));
     })
 
-
     it(`should show an flip oriented board`, () => {
         cy.get('#svg-coordinates')
             .invoke('text')
             .should('contain', 'hgfedcba')
-            .should('contain', '12345678')
-
-        ;
+            .should('contain', '12345678');
     })
-
-
 
 })

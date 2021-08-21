@@ -25,6 +25,37 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 
+Cypress.Commands.add('accentElement', (itemSelector) => {
+    cy.get(itemSelector).then($button => {
+        $button.css('outline', '3px dotted #02f513')
+        $button.css('outline-offset', '5px')
+        $button.css('z-index', '99999')
+    });
+
+})
+
+
+
+Cypress.Commands.add('captureButton', (buttonSelector, testPrefix) => {
+    cy.get(buttonSelector).scrollIntoView({ timeout: 200, offset: { top: -100, left: 0 } });
+    cy.get(buttonSelector).then($el => {
+        const buttonRect = $el[0].getBoundingClientRect()
+        cy.screenshot(`${testPrefix}_button-alone`, {
+            clip: {
+                x: buttonRect.x,
+                y: buttonRect.y,
+                width: buttonRect.width,
+                height: buttonRect.height
+            }
+        })
+    })
+
+
+})
+
+
+
+
 Cypress.Commands.add('globalCss', () => {
     console.log('[COMMAND] globalCss')
     cy.document().then(doc => {

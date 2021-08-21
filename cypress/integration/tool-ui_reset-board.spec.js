@@ -9,11 +9,7 @@ describe('Button reset board', () => {
     let targetRect;
 
     before(() => {
-        cy.visit('/', {
-            headers: {
-                'user-agent': 'Mozilla/5.0 (Linux; Android 9; SM-G950F Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.157 Mobile Safari/537.36'
-            }
-        })
+        cy.visit('/')
     })
 
     beforeEach(() => {
@@ -23,19 +19,16 @@ describe('Button reset board', () => {
 
     it('should scroll to button, mark and take screenshot', () => {
         cy.get(buttonSelector).scrollIntoView({ timeout: 200, offset: { top: -100, left: 0 } });
-        cy.get(buttonSelector).then($button => {
-            $button.css('outline', '3px dotted #02f513')
-            $button.css('outline-offset', '5px')
-            $button.css('z-index', '99999')
-        });
-
-
+        cy.accentElement(buttonSelector);
         cy.screenshot(`${testPrefix}_button`);
-
         cy.get('.chess-board').then($el => {
             targetRect = $el[0].getBoundingClientRect()
-                // cy.log(JSON.stringify(targetRect))
         })
+    })
+
+
+    it('button caption', () => {
+        cy.captureButton(buttonSelector, testPrefix)
     })
 
     it('board caption 0', () => {
@@ -75,6 +68,5 @@ describe('Button reset board', () => {
     it(`should have "a7" square white black pawn`, () => {
         cy.get('#piece-a7').should('have.text', getUnicodePiece('p'));
     })
-
 
 })
